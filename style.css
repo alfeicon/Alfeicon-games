@@ -1,3 +1,6 @@
+/* ===========================================================
+  RESET & BASE STYLES
+  =========================================================== */
 * {
   margin: 0;
   padding: 0;
@@ -10,7 +13,9 @@ body {
   color: white;
 }
 
-/* NAVBAR */
+/* ===========================================================
+  NAVBAR
+  =========================================================== */
 .navbar {
   position: sticky;
   top: 0;
@@ -28,7 +33,9 @@ body {
   height: 28px;
 }
 
-/* LUPA */
+/* ===========================================================
+  SEARCH ICON (LUPA)
+  =========================================================== */
 .search-icon {
   background: none;
   border: none;
@@ -43,15 +50,22 @@ body {
   height: 22px;
 }
 
-/* MENÚ LATERAL */
+/* ===========================================================
+  SEARCH PANEL (MENÚ LATERAL)
+  =========================================================== */
 .search-panel {
   position: fixed;
   top: 0;
-  right: -300px;
-  width: 280px;
+  right: -100%; /* Oculto por defecto */
+  width: 80vw;
+  max-width: 360px;
+  min-width: 280px;
   height: 100%;
-  background-color: #ffffff;
+  background-color: rgba(255, 255, 255, 0.6);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
   box-shadow: -2px 0 10px rgba(0, 0, 0, 0.2);
+  border-left: 1px solid rgba(255, 255, 255, 0.3);
   padding: 20px;
   display: flex;
   flex-direction: column;
@@ -61,44 +75,84 @@ body {
 }
 
 .search-panel.visible {
-  right: 0;
+  right: 0; /* Muestra el panel */
+}
+
+.search-panel h3 {
+  font-size: 18px;
+  margin-bottom: 10px;
+  color: #222;
 }
 
 .search-panel input {
+  padding: 8px;
   font-size: 14px;
-  padding: 6px 10px;
   border: 1px solid #ccc;
   border-radius: 8px;
   color: black;
   width: 100%;
 }
 
-.search-panel button {
-  padding: 6px 10px;
-  border: none;
-  border-radius: 6px;
-  font-size: 14px;
-  font-weight: bold;
-  cursor: pointer;
-}
-
 .panel-buttons {
   display: flex;
-  gap: 8px;
   justify-content: space-between;
+  gap: 12px;
+}
+
+/* Botones del panel */
+#applyFilters,
+#clearFilters {
+  font-weight: bold;
+  border: none;
+  padding: 8px;
+  border-radius: 6px;
+  cursor: pointer;
+  color: white;
 }
 
 #applyFilters {
   background-color: #007aff;
-  color: white;
 }
 
 #clearFilters {
   background-color: #d32f2f;
-  color: white;
 }
 
-/* CATÁLOGO */
+/* Botones extra reutilizables */
+.btn-red {
+  background-color: #d32f2f;
+  color: white;
+  padding: 10px 20px;
+  font-weight: bold;
+  border: none;
+  border-radius: 8px;
+}
+
+.btn-blue {
+  background-color: #007bff;
+  color: white;
+  padding: 10px 20px;
+  font-weight: bold;
+  border: none;
+  border-radius: 8px;
+}
+
+/* Botón de cerrar */
+.close-btn {
+  position: absolute;
+  top: 10px;
+  right: 12px;
+  background: transparent;
+  border: none;
+  font-size: 24px;
+  color: #333;
+  cursor: pointer;
+  align-self: flex-end;
+}
+
+/* ===========================================================
+  CATÁLOGO DE PACKS
+  =========================================================== */
 main {
   padding: 32px;
   display: grid;
@@ -156,7 +210,9 @@ main {
   margin-top: auto;
 }
 
-/* BADGE NUEVO */
+/* ===========================================================
+  BADGE NUEVO
+  =========================================================== */
 .badge {
   position: absolute;
   top: 16px;
@@ -172,92 +228,13 @@ main {
   letter-spacing: 0.5px;
 }
 
-/* RESPONSIVE */
+/* ===========================================================
+  RESPONSIVE DESIGN
+  =========================================================== */
 @media (max-width: 500px) {
   .search-panel {
-    width: 100%;
+   width: 100%;
+   min-width: unset;
+   max-width: unset;
   }
-}
-
-.close-btn {
-  position: absolute;
-  top: 10px;
-  right: 12px;
-  background: transparent;
-  border: none;
-  font-size: 24px;
-  cursor: pointer;
-  color: #555;
-}
-
-.search-panel h3 {
-  font-size: 18px;
-  margin-bottom: 10px;
-  color: #222;
-}
-
-.search-panel {
-  position: fixed;
-  top: 0;
-  right: -100%;
-  width: 80vw;
-  max-width: 360px;               /* Limita el ancho máximo */
-  min-width: 280px;               /* Asegura que no se achique demasiado */
-  height: 100%;
-  background-color: rgba(255, 255, 255, 0.6); 
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  box-shadow: -2px 0 10px rgba(0, 0, 0, 0.2);
-  padding: 20px;
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  transition: right 0.3s ease;
-  z-index: 9999;
-  border-left: 1px solid rgba(255, 255, 255, 0.3);
-}
-
-.search-panel.visible {
-  right: 0;
-}
-
-.search-panel input {
-  padding: 8px;
-  font-size: 14px;
-  border: 1px solid #ccc;
-  border-radius: 8px;
-}
-
-.panel-buttons {
-  display: flex;
-  gap: 8px;
-}
-
-#applyFilters {
-  background: #007aff;
-  color: white;
-  font-weight: bold;
-  border: none;
-  padding: 8px;
-  border-radius: 6px;
-  cursor: pointer;
-}
-
-#clearFilters {
-  background: #d32f2f;
-  color: white;
-  font-weight: bold;
-  border: none;
-  padding: 8px;
-  border-radius: 6px;
-  cursor: pointer;
-}
-
-.close-btn {
-  background: transparent;
-  border: none;
-  font-size: 24px;
-  color: #333;
-  cursor: pointer;
-  align-self: flex-end;
 }

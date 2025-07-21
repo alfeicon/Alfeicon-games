@@ -4,33 +4,46 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Catálogo Alfeicon Games</title>
+  <!-- Hoja de estilos principal -->
   <link rel="stylesheet" href="style.css" />
+  <!-- Librería para parsear CSV -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
 </head>
 <body>
+  <!-- Barra de navegación superior -->
   <header class="navbar">
     <div class="logo">
+      <!-- Logo de la empresa -->
       <img src="logo.png" alt="Alfeicon Games" />
     </div>
-    <button class="search-icon" id="searchIcon">
+    <!-- Botón para abrir el panel de búsqueda -->
+    <button class="search-icon" id="searchIcon" aria-label="Abrir búsqueda">
       <img src="magnifyingglass.svg" alt="Buscar" />
     </button>
   </header>
 
   <!-- Menú lateral de búsqueda -->
-  <aside class="search-panel" id="sideMenu">
-    <button id="closeBtn" class="close-btn">&times;</button>
+  <aside class="search-panel" id="sideMenu" aria-label="Panel de búsqueda">
+    <!-- Botón para cerrar el panel -->
+    <button id="closeBtn" class="close-btn" aria-label="Cerrar búsqueda">&times;</button>
     <h3>Buscar juegos</h3>
+    <!-- Campo para buscar por nombre -->
     <input type="text" id="searchInput" placeholder="Nombre del juego" />
+    <!-- Filtros de precio mínimo y máximo -->
     <input type="number" id="precioMin" placeholder="Precio mín" min="0" />
     <input type="number" id="precioMax" placeholder="Precio máx" min="0" />
     <div class="panel-buttons">
-      <button id="applyFilters">Buscar</button>
-      <button id="clearFilters">Limpiar</button>
+      <!-- Botón para limpiar filtros -->
+      <button id="clearFilters" class="btn-red">Limpiar</button>
+      <!-- Botón para aplicar filtros -->
+      <button id="applyFilters" class="btn-blue">Buscar</button>
     </div>
   </aside>
 
+  <!-- Catálogo de juegos -->
   <main id="catalogo"></main>
+
+  <!-- Script principal de la página -->
   <script src="script.js"></script>
 </body>
 </html>
