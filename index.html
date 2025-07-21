@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Catálogo Alfeicon Games</title>
+  <link rel="stylesheet" href="style.css" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+</head>
+<body>
+  <header class="navbar">
+    <div class="logo">
+      <img src="logo.png" alt="Alfeicon Games" />
+    </div>
+    <button class="search-icon" id="searchIcon">
+      <img src="magnifyingglass.svg" alt="Buscar" />
+    </button>
+  </header>
+
+  <!-- Menú lateral de búsqueda -->
+  <aside class="search-panel" id="sideMenu">
+    <button id="closeBtn" class="close-btn">&times;</button>
+    <h3>Buscar juegos</h3>
+    <input type="text" id="searchInput" placeholder="Nombre del juego" />
+    <input type="number" id="precioMin" placeholder="Precio mín" min="0" />
+    <input type="number" id="precioMax" placeholder="Precio máx" min="0" />
+    <div class="panel-buttons">
+      <button id="applyFilters">Buscar</button>
+      <button id="clearFilters">Limpiar</button>
+    </div>
+  </aside>
+
+  <main id="catalogo"></main>
+  <script src="script.js"></script>
+</body>
+</html>
