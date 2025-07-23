@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>Agregar nuevo pack</title>
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    body {
+      padding: 32px;
+      font-family: sans-serif;
+      background-color: #111;
+      color: white;
+    }
+
+    h1 {
+      margin-bottom: 20px;
+    }
+
+    form {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      max-width: 500px;
+    }
+
+    input, textarea {
+      padding: 8px;
+      border-radius: 6px;
+      border: none;
+      font-size: 14px;
+    }
+
+    button {
+      padding: 10px;
+      background-color: #00c853;
+      color: white;
+      font-weight: bold;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+
+    .success {
+      margin-top: 12px;
+      color: #00e676;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <h1>Agregar nuevo pack</h1>
+
+  <form id="packForm">
+    <input type="text" name="packId" placeholder="ID del pack (Ej: 210S)" required />
+    <textarea name="juegosIncluidos" placeholder="Lista de juegos separados por salto de línea" rows="6" required></textarea>
+    <input type="number" name="precio" placeholder="Precio CLP" required />
+    <input type="url" name="imagenURL" placeholder="URL de imagen" required />
+    <input type="text" name="estado" placeholder="Estado (opcional)" />
+    <input type="text" name="consola" placeholder="Consolas (Ej: Nintendo Switch, Nintendo Switch 2)" required />
+    <button type="submit">Subir Pack</button>
+    <p id="mensaje" class="success"></p>
+  </form>
+
+  <script>
+    const form = document.getElementById("packForm");
+    const mensaje = document.getElementById("mensaje");
+
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+
+      const datos = Object.fromEntries(new FormData(form));
+      
+      const respuesta = await fetch("https://script.google.com/macros/s/AKfycbxMiNdxcLxZXrJL0tyzerH0A_MwqrfZUQiwiNjXIlgnh_hw2Z5OKx9vYNBr1F2i67rL/exec", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(datos)
+      });
+
+      const resultado = await respuesta.json();
+
+      if (resultado.status === "ok") {
+        mensaje.textContent = "✅ Pack agregado correctamente.";
+        form.reset();
+      } else {
+        mensaje.textContent = "❌ Hubo un error al subir el pack.";
+      }
+    });
+  </script>
+</body>
+</html>
