@@ -75,12 +75,20 @@ function filtrarPacks() {
 
 // Muestra los packs en el catálogo
 function mostrarPacks(packs) {
+  const catalogo = document.getElementById('catalogo');
   catalogo.innerHTML = '';
+
   packs.forEach(pack => {
     const div = document.createElement('div');
     div.className = 'pack';
+
+    // Separar consolas (badge por cada una)
+    const consolas = pack.Consola
+     ? pack.Consola.split('\n').map(c => `<span class="badge-console">${c.trim()}</span>`).join(' ')
+    : '<span class="badge-console">No especificada</span>'
+
     div.innerHTML = `
-      ${pack.Estado ? `<div class="badge">${pack.Estado}</div>` : ''}
+      ${pack.Estado ? `<div class="badge-console">${pack.Estado}</div>` : ''}
       <img src="${pack["Imagen URL"]}" alt="Imagen pack" />
       <h2>Pack Nº ${pack["Pack ID"]}</h2>
       <p><strong>Juegos incluidos:</strong></p>
@@ -90,9 +98,22 @@ function mostrarPacks(packs) {
           .map(j => `<li>${j}</li>`)
           .join('')}
       </ul>
-      <p><strong>Consola:</strong> ${pack.Consola}</p>
-      <p class="precio">$${Number(pack["Precio CLP"]).toLocaleString('es-CL')} CLP</p>
+
+      <div class="compatibilidad">
+        <h4>Compatibilidad</h4>
+        ${
+          pack.Consola
+            ? pack.Consola.split('\n').map(c => `<span class="badge-console">${c.trim()}</span>`).join('')
+            : '<span class="badge-console">No especificada</span>'
+        }
+      </div>
+
+      <div class="seccion-precio">
+        <h4>Precio</h4>
+        <p class="precio">$${Number(pack["Precio CLP"]).toLocaleString('es-CL')} CLP</p>
+      </div>
     `;
+
     catalogo.appendChild(div);
   });
 }

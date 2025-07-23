@@ -29,17 +29,31 @@
   <!-- Menú lateral de búsqueda -->
   <aside class="search-panel" id="sideMenu" aria-label="Panel de búsqueda">
     <!-- Botón para cerrar el panel -->
-    <button id="closeBtn" class="close-btn" aria-label="Cerrar búsqueda">&times;</button>
+    <button id="closeBtn" class="close-btn" aria-label="Cerrar búsqueda">
+      <img src="xmark.circle.fill.svg" alt="Cerrar" />
+    </button>
     <h3>Buscador de juegos</h3>
     <div class="search-hint">
       <p><strong>¿Buscas varios juegos?</strong> Escríbelos separados por comas.</p>
       <p><em>Ejemplo: Mario, Zelda, Pokémon</em></p>
     </div>
     <!-- Campo para buscar por nombre -->
-    <input type="text" id="searchInput" placeholder="Nombre del juego" />
-    <!-- Filtros de precio mínimo y máximo -->
-    <input type="number" id="precioMin" placeholder="Precio mín" min="0" />
-    <input type="number" id="precioMax" placeholder="Precio máx" min="0" />
+<!-- Campo con ícono: Nombre del juego -->
+    <div class="input-icono">
+      <img src="magnifyingglass.circle.fill.svg" alt="Buscar" />
+      <input type="text" id="searchInput" placeholder="Nombre del juego" />
+    </div>
+
+    <!-- Campo con ícono: Precio mínimo -->
+    <div class="input-icono">
+      <img src="dollarsign.circle.fill.svg" alt="Precio mínimo" />
+      <input type="number" id="precioMin" placeholder="Precio mín" min="0" />
+    </div>
+
+    <div class="input-icono">
+      <img src="dollarsign.circle.fill.svg" alt="Precio máximo" />
+      <input type="number" id="precioMax" placeholder="Precio máx" min="0" />
+    </div>
     <div class="panel-buttons">
       <!-- Botón para limpiar filtros -->
       <button id="clearFilters" class="btn-red">Limpiar</button>
