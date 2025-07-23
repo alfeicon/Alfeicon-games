@@ -67,34 +67,39 @@
     <button type="submit">Subir Pack</button>
     <p id="mensaje" class="success"></p>
   </form>
+<script>
+  const form = document.getElementById("packForm");
+  const mensaje = document.getElementById("mensaje");
 
-  <script>
-    const form = document.getElementById("packForm");
-    const mensaje = document.getElementById("mensaje");
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
 
-    form.addEventListener("submit", async (e) => {
-      e.preventDefault();
+    const datos = Object.fromEntries(new FormData(form));
 
-      const datos = Object.fromEntries(new FormData(form));
-      const baseUrl = "/api/submit-pack";
-      const url = `${baseUrl}?packId=${encodeURIComponent(datos.packId)}&juegos=${encodeURIComponent(datos.juegosIncluidos)}&precio=${datos.precio}&imagen=${encodeURIComponent(datos.imagenURL)}&estado=${encodeURIComponent(datos.estado)}&consola=${encodeURIComponent(datos.consola)}`;
+    try {
+      const res = await fetch("/api/submit-pack", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(datos)
+      });
 
-      try {
-        const res = await fetch(url);
-        const text = await res.text();
-        if (text === "OK") {
-          mensaje.textContent = "✅ Pack agregado correctamente.";
-          mensaje.className = "success ok";
-          form.reset();
-        } else {
-          mensaje.textContent = "❌ Error al subir pack.";
-          mensaje.className = "success error";
-        }
-      } catch (error) {
-        mensaje.textContent = "❌ Error de conexión.";
+      const result = await res.json();
+
+      if (result.status === "ok") {
+        mensaje.textContent = "✅ Pack agregado correctamente.";
+        mensaje.className = "success ok";
+        form.reset();
+      } else {
+        mensaje.textContent = "❌ Error al subir pack.";
         mensaje.className = "success error";
       }
-    });
-  </script>
+    } catch (error) {
+      mensaje.textContent = "❌ Error de conexión.";
+      mensaje.className = "success error";
+    }
+  });
+</script>
 </body>
 </html>
