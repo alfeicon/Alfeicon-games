@@ -76,8 +76,7 @@
       e.preventDefault();
 
       const datos = Object.fromEntries(new FormData(form));
-      const baseUrl = "https://script.google.com/macros/s/AKfycbxMiNdxcLxZXrJL0tyzerH0A_MwqrfZUQiwiNjXIlgnh_hw2Z5OKx9vYNBr1F2i67rL/exec";
-
+      const baseUrl = "/api/submit-pack";
       const url = `${baseUrl}?packId=${encodeURIComponent(datos.packId)}&juegos=${encodeURIComponent(datos.juegosIncluidos)}&precio=${datos.precio}&imagen=${encodeURIComponent(datos.imagenURL)}&estado=${encodeURIComponent(datos.estado)}&consola=${encodeURIComponent(datos.consola)}`;
 
       try {
