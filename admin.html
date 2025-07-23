@@ -42,8 +42,15 @@
 
     .success {
       margin-top: 12px;
-      color: #00e676;
       font-weight: bold;
+    }
+
+    .success.ok {
+      color: #00e676;
+    }
+
+    .success.error {
+      color: #ff5252;
     }
   </style>
 </head>
@@ -61,31 +68,34 @@
     <p id="mensaje" class="success"></p>
   </form>
 
- <script>
-const form = document.getElementById("packForm");
-const mensaje = document.getElementById("mensaje");
+  <script>
+    const form = document.getElementById("packForm");
+    const mensaje = document.getElementById("mensaje");
 
-form.addEventListener("submit", async (e) => {
-  e.preventDefault();
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
 
-  const datos = Object.fromEntries(new FormData(form));
-  const baseUrl = "https://script.google.com/macros/s/AKfycb.../exec"; // 🔁 Usa la URL real actualizada
+      const datos = Object.fromEntries(new FormData(form));
+      const baseUrl = "https://script.google.com/macros/s/AKfycbxMiNdxcLxZXrJL0tyzerH0A_MwqrfZUQiwiNjXIlgnh_hw2Z5OKx9vYNBr1F2i67rL/exec";
 
-  const url = `${baseUrl}?packId=${encodeURIComponent(datos.packId)}&juegos=${encodeURIComponent(datos.juegosIncluidos)}&precio=${datos.precio}&imagen=${encodeURIComponent(datos.imagenURL)}&estado=${encodeURIComponent(datos.estado)}&consola=${encodeURIComponent(datos.consola)}`;
+      const url = `${baseUrl}?packId=${encodeURIComponent(datos.packId)}&juegos=${encodeURIComponent(datos.juegosIncluidos)}&precio=${datos.precio}&imagen=${encodeURIComponent(datos.imagenURL)}&estado=${encodeURIComponent(datos.estado)}&consola=${encodeURIComponent(datos.consola)}`;
 
-  try {
-    const res = await fetch(url);
-    const text = await res.text();
-    if (text === "OK") {
-      mensaje.textContent = "✅ Pack agregado correctamente.";
-      form.reset();
-    } else {
-      mensaje.textContent = "❌ Error al subir pack.";
-    }
-  } catch (error) {
-    mensaje.textContent = "❌ Error de conexión.";
-  }
-});
-</script>
+      try {
+        const res = await fetch(url);
+        const text = await res.text();
+        if (text === "OK") {
+          mensaje.textContent = "✅ Pack agregado correctamente.";
+          mensaje.className = "success ok";
+          form.reset();
+        } else {
+          mensaje.textContent = "❌ Error al subir pack.";
+          mensaje.className = "success error";
+        }
+      } catch (error) {
+        mensaje.textContent = "❌ Error de conexión.";
+        mensaje.className = "success error";
+      }
+    });
+  </script>
 </body>
 </html>
