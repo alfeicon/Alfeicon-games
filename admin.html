@@ -2,104 +2,58 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
-  <title>Agregar nuevo pack</title>
+  <title>Subir nuevo pack | Alfeicon Games</title>
   <link rel="stylesheet" href="style.css" />
   <style>
     body {
-      padding: 32px;
-      font-family: sans-serif;
+      padding: 40px 16px;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
       background-color: #111;
       color: white;
+      text-align: center;
     }
 
     h1 {
-      margin-bottom: 20px;
+      font-size: 28px;
+      margin-bottom: 24px;
     }
 
-    form {
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-      max-width: 500px;
-    }
-
-    input, textarea {
-      padding: 8px;
-      border-radius: 6px;
-      border: none;
-      font-size: 14px;
-    }
-
-    button {
-      padding: 10px;
+    .btn-formulario {
+      display: inline-block;
+      padding: 14px 24px;
       background-color: #00c853;
       color: white;
       font-weight: bold;
-      border: none;
-      border-radius: 8px;
-      cursor: pointer;
+      border-radius: 10px;
+      text-decoration: none;
+      font-size: 18px;
+      transition: background 0.3s;
     }
 
-    .success {
-      margin-top: 12px;
-      font-weight: bold;
+    .btn-formulario:hover {
+      background-color: #00b347;
     }
 
-    .success.ok {
-      color: #00e676;
-    }
-
-    .success.error {
-      color: #ff5252;
+    .instruccion {
+      margin-top: 24px;
+      font-size: 14px;
+      color: #ccc;
     }
   </style>
 </head>
 <body>
-  <h1>Agregar nuevo pack</h1>
 
-  <form id="packForm">
-    <input type="text" name="packId" placeholder="ID del pack (Ej: 210S)" required />
-    <textarea name="juegosIncluidos" placeholder="Lista de juegos separados por salto de línea" rows="6" required></textarea>
-    <input type="number" name="precio" placeholder="Precio CLP" required />
-    <input type="url" name="imagenURL" placeholder="URL de imagen" required />
-    <input type="text" name="estado" placeholder="Estado (opcional)" />
-    <input type="text" name="consola" placeholder="Consolas (Ej: Nintendo Switch, Nintendo Switch 2)" required />
-    <button type="submit">Subir Pack</button>
-    <p id="mensaje" class="success"></p>
-  </form>
-<script>
-  const form = document.getElementById("packForm");
-  const mensaje = document.getElementById("mensaje");
+  <h1>Subir nuevo pack de juegos</h1>
 
-  form.addEventListener("submit", async (e) => {
-    e.preventDefault();
+  <a
+    href="https://docs.google.com/forms/d/e/1FAIpQLSc-PRS8k6dH3kEfKIuorvro1NYDmqOJcSx5IYCHxZjqgr-4cA/viewform"
+    target="_blank"
+    class="btn-formulario"
+  >
+    📤 Abrir formulario de carga
+  </a>
 
-    const datos = Object.fromEntries(new FormData(form));
+  <p class="instruccion">Puedes usarlo fácilmente desde tu celular o PC.</p>
 
-    try {
-      const res = await fetch("/api/submit-pack", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify(datos)
-      });
-
-      const result = await res.json();
-
-      if (result.status === "ok") {
-        mensaje.textContent = "✅ Pack agregado correctamente.";
-        mensaje.className = "success ok";
-        form.reset();
-      } else {
-        mensaje.textContent = "❌ Error al subir pack.";
-        mensaje.className = "success error";
-      }
-    } catch (error) {
-      mensaje.textContent = "❌ Error de conexión.";
-      mensaje.className = "success error";
-    }
-  });
-</script>
 </body>
 </html>
