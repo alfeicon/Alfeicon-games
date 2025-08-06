@@ -3,33 +3,69 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>En mantenimiento</title>
-  <style>
-    body {
-      background-color: #1a1a1a;
-      color: #fff;
-      font-family: 'Segoe UI', sans-serif;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      height: 100vh;
-      text-align: center;
-      margin: 0;
-      padding: 20px;
-    }
-    h1 {
-      font-size: 2.5rem;
-      margin-bottom: 1rem;
-    }
-    p {
-      font-size: 1.2rem;
-      max-width: 600px;
-    }
-  </style>
+  <title>Catálogo Alfeicon Games</title>
+  <!-- Hoja de estilos principal -->
+  <link rel="stylesheet" href="style.css" />
+  <!-- Librería para parsear CSV -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
 </head>
 <body>
-  <h1>🚧 Lo sentimos</h1>
-  <p>Estamos haciendo unas mejoras en la página. ¡Muy pronto volveremos a estar activos! 🙌</p>
+  <!-- Barra de navegación superior -->
+  <header class="navbar">
+    <div class="logo">
+      <!-- Logo de la empresa -->
+      <img src="logo.png" alt="Alfeicon Games" />
+    </div>
+    <!-- Botón para abrir el panel de búsqueda -->
+    <button class="search-icon" id="searchIcon" aria-label="Abrir búsqueda">
+      <img src="magnifyingglass.svg" alt="Buscar" />
+    </button>
+  </header>
+
+  <section class="encabezado">
+  <h1>Catálogo: Packs de Juegos</h1>
+  </section>
+
+  <!-- Menú lateral de búsqueda -->
+  <aside class="search-panel" id="sideMenu" aria-label="Panel de búsqueda">
+    <!-- Botón para cerrar el panel -->
+    <button id="closeBtn" class="close-btn" aria-label="Cerrar búsqueda">
+      <img src="xmark.circle.fill.svg" alt="Cerrar" />
+    </button>
+    <h3>Buscador de juegos</h3>
+    <div class="search-hint">
+      <p><strong>¿Buscas varios juegos?</strong> Escríbelos separados por comas.</p>
+      <p><em>Ejemplo: Mario, Zelda, Pokémon</em></p>
+    </div>
+    <!-- Campo para buscar por nombre -->
+<!-- Campo con ícono: Nombre del juego -->
+    <div class="input-icono">
+      <img src="magnifyingglass.circle.fill.svg" alt="Buscar" />
+      <input type="text" id="searchInput" placeholder="Nombre del juego" />
+    </div>
+
+    <!-- Campo con ícono: Precio mínimo -->
+    <div class="input-icono">
+      <img src="dollarsign.circle.fill.svg" alt="Precio mínimo" />
+      <input type="number" id="precioMin" placeholder="Precio mín" min="0" />
+    </div>
+
+    <div class="input-icono">
+      <img src="dollarsign.circle.fill.svg" alt="Precio máximo" />
+      <input type="number" id="precioMax" placeholder="Precio máx" min="0" />
+    </div>
+    <div class="panel-buttons">
+      <!-- Botón para limpiar filtros -->
+      <button id="clearFilters" class="btn-red">Limpiar</button>
+      <!-- Botón para aplicar filtros -->
+      <button id="applyFilters" class="btn-blue">Buscar</button>
+    </div>
+  </aside>
+
+  <!-- Catálogo de juegos -->
+  <main id="catalogo"></main>
+
+  <!-- Script principal de la página -->
+  <script src="script.js"></script>
 </body>
 </html>

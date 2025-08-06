@@ -341,3 +341,39 @@ main {
    max-width: unset;
   }
 }
+
+
+.imagen-pack {
+  width: 100%;
+  max-height: 160px;
+  object-fit: cover;
+  border-radius: 12px;
+  margin-bottom: 1rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.btn-black {
+  display: inline-block;
+  margin-top: 10px;
+  padding: 10px 16px;
+  background-color: #000;
+  color: #fff;
+  font-weight: bold;
+  border-radius: 8px;
+  text-decoration: none;
+  font-size: 14px;
+  transition: background-color 0.3s ease;
+}
+
+.btn-black:hover {
+  background-color: #333;
+}
+
+.whatsapp-aviso {
+  display: block;
+  margin-top: 8px;
+  font-size: 0.8rem;
+  color: #ffcccc; /* o cualquier tono suave que combine */
+  text-align: left; /* <-- esto lo alinea a la izquierda */
+  padding-left: 5px; /* opcional, para despegarlo del borde */
+}
