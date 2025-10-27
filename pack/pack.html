@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Catálogo Alfeicon Games</title>
+  <!-- Hoja de estilos principal -->
+  <link rel="stylesheet" href="style.css" />
+  <!-- Librería para parsear CSV -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+</head>
+<body>
+  <!-- Barra de navegación superior -->
+  <header class="navbar">
+    <!-- Logo a la izquierda -->
+    <div class="logo">
+      <img src="logo.png" alt="Alfeicon Games" />
+    </div>
+
+    <!-- Contenedor derecho (lupa + menú juntos) -->
+    <div class="nav-actions">
+      <!-- Botón de búsqueda -->
+      <button class="search-icon" id="searchIcon" aria-label="Abrir búsqueda">
+        <img src="magnifyingglass.svg" alt="Buscar" />
+      </button>
+
+      <!-- Botón menú -->
+      <button class="menu-icon" id="menuIcon" aria-label="Abrir menú" aria-controls="hamburgerMenu" aria-expanded="false">
+        <span class="menu-bar"></span><span class="menu-bar"></span><span class="menu-bar"></span>
+      </button>
+    </div>
+  </header>
+
+  <section class="encabezado">
+    <h1>Catálogo: Packs de Juegos</h1>
+  </section>
+
+<!-- Menú lateral (izquierda) -->
+<aside class="menu-panel" id="hamburgerMenu" aria-label="Menú principal">
+  <button class="close-btn menu-close" id="menuCloseBtn" aria-label="Cerrar menú">
+    <img src="xmark.circle.fill.svg" alt="Cerrar" />
+  </button>
+
+  <nav class="menu-list" role="navigation">
+    <a class="menu-item" href="/inicio/inicio.html">
+      <span class="menu-ico">
+        <img class="menu-ico-img" src="house.fill.svg" alt="" aria-hidden="true" />
+      </span>
+      <span>Inicio</span>
+    </a>
+
+    <a class="menu-item" href="/games/game.html">
+      <span class="menu-ico">
+        <img class="menu-ico-img" src="gamecontroller.circle.fill.svg" alt="" aria-hidden="true" />
+      </span>
+      <span>juegos Individuales</span>
+    </a>
+
+    <a class="menu-item" href="/instrucciones/instrucc.html">
+      <span class="menu-ico">
+        <img class="menu-ico-img" src="book.pages.fill.svg" alt="" aria-hidden="true" />
+      </span>
+      <span>Instrucciones</span>
+    </a>
+
+    <a class="menu-item" href="/ayuda/ayuda.html">
+      <span class="menu-ico">
+        <img class="menu-ico-img" src="person.crop.circle.badge.questionmark.svg" alt="" aria-hidden="true" />
+      </span>
+      <span>Ayuda</span>
+    </a>
+  </nav>
+</aside>
+
+  <!-- Backdrop compartido -->
+  <div class="backdrop" id="backdrop"></div>
+
+  <!-- Panel lateral de búsqueda (derecha) -->
+  <aside class="search-panel" id="sideMenu" aria-label="Panel de búsqueda">
+    <button id="closeBtn" class="close-btn" aria-label="Cerrar búsqueda">
+      <img src="xmark.circle.fill.svg" alt="Cerrar" />
+    </button>
+
+    <h3>Buscador de juegos</h3>
+    <div class="search-hint">
+      <p><strong>¿Buscas varios juegos?</strong> Escríbelos separados por comas.</p>
+      <p><em>Ejemplo: Mario, Zelda, Pokémon</em></p>
+    </div>
+
+    <div class="input-icono">
+      <img src="magnifyingglass.circle.fill.svg" alt="Buscar" />
+      <input type="text" id="searchInput" placeholder="Nombre del juego" />
+    </div>
+
+    <div class="input-icono">
+      <img src="dollarsign.circle.fill.svg" alt="Precio mínimo" />
+      <input type="number" id="precioMin" placeholder="Precio mín" min="0" />
+    </div>
+
+    <div class="input-icono">
+      <img src="dollarsign.circle.fill.svg" alt="Precio máximo" />
+      <input type="number" id="precioMax" placeholder="Precio máx" min="0" />
+    </div>
+
+    <div class="panel-buttons">
+      <button id="clearFilters" class="btn-red">Limpiar</button>
+      <button id="applyFilters" class="btn-blue">Buscar</button>
+    </div>
+  </aside>
+
+  <main id="catalogo"></main>
+
+  <script src="script.js"></script>
+</body>
+</html>
