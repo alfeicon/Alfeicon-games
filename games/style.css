@@ -1,0 +1,411 @@
+/* =========================================================
+   Variables (tema oscuro)
+   ========================================================= */
+:root{
+  --accent:#7c4dff;
+  --card:#2a2a2e;
+  --cardBorder:rgba(255,255,255,.08);
+  --bg:#1c1c1e;
+  --text:#f2f2f2;
+
+  /* Altura Navbar (por si la usas en JS) */
+  --nav-h: 60px;
+
+  /* Hamburguesa estilo Apple */
+  --burger-size: 28px;
+  --bar-thickness: 2px;
+  --bar-gap: 4px;
+  --bar-side-padding: 4px;
+}
+
+/* =========================================================
+   Reset básico
+   ========================================================= */
+*{ margin:0; padding:0; box-sizing:border-box }
+html,body{ background:var(--bg); color:var(--text) }
+body{
+  font-family:'Inter',system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+  -webkit-font-smoothing:antialiased; 
+  -moz-osx-font-smoothing:grayscale;
+}
+
+/* =========================================================
+   NAVBAR
+   ========================================================= */
+.navbar{
+  position:sticky; top:0; z-index:1000;
+  display:flex; justify-content:space-between; align-items:center;
+  padding:10px 12px; /* compacto para acercar botones */
+  background:rgba(40,40,40,.85);
+  backdrop-filter:blur(10px);
+  border-bottom:1px solid var(--cardBorder);
+}
+.logo{ display:flex; align-items:center; gap:8px; text-decoration:none; color:var(--text) }
+.logo img{ height:28px }
+.logo-text{ font-weight:800; font-size:18px; color:var(--text) }
+@media (max-width:640px){ .logo-text{ font-size:16px } }
+
+/* Contenedor que agrupa lupa + hamburguesa a la derecha */
+.nav-actions{ display:flex; align-items:center; gap:8px } /* ajusta el espacio aquí */
+
+/* Orden de superposición (evita choques) */
+.navbar { position: relative; z-index: 10; }
+.search-btn { position: relative; z-index: 12; }
+.nav-toggle { position: relative; z-index: 11; }
+
+/* =========================================================
+   Botón Lupa (🔍 ↔ ✕)
+   ========================================================= */
+.search-btn{
+  background:transparent; border:0; cursor:pointer;
+  display:grid; place-items:center;
+  width:32px; height:32px; padding:0;
+}
+.search-btn .i{ width:20px; height:20px; transition:opacity .18s ease, transform .18s ease }
+/* Ícono de búsqueda como background */
+.search-btn .i.i-search{ background:url('magnifyingglass.svg') no-repeat center/20px }
+/* Ícono de cierre “X” dibujado con 2 barritas */
+.search-btn .i.i-close{
+  position:absolute; left:6px; top:6px; width:20px; height:20px;
+  opacity:0; transform:scale(.85);
+}
+.search-btn .i.i-close::before,
+.search-btn .i.i-close::after{
+  content:""; position:absolute; left:0; right:0; top:9px; height:2px; background:#fff;
+}
+.search-btn .i.i-close::before{ transform:rotate(45deg) }
+.search-btn .i.i-close::after { transform:rotate(-45deg) }
+/* Estado abierto: ocultar 🔍 y mostrar ✕ */
+.search-btn.is-open .i.i-search{ opacity:0; transform:scale(.85) }
+.search-btn.is-open .i.i-close { opacity:1; transform:scale(1) }
+
+/* Cuando el MENÚ está abierto, oculta la lupa para que no invada el header del menú */
+body.menu-open #openSearch{
+  opacity:0;
+  visibility:hidden;
+  pointer-events:none;
+  transition:opacity .15s ease;
+}
+
+/* =========================================================
+   Botón Hamburguesa (morph → X)
+   ========================================================= */
+.nav-toggle{
+  position:relative;
+  background:none; border:0; cursor:pointer;
+  width:var(--burger-size); height:var(--burger-size); padding:0;
+  color:var(--text); border-radius:9999px;
+  display:none; /* visible solo en móvil */
+}
+.nav-toggle .line{
+  position:absolute; top:50%; left:var(--bar-side-padding); right:var(--bar-side-padding);
+  height:var(--bar-thickness); background:currentColor; border-radius:2px;
+  transform-origin:50% 50%;
+  transition:transform .28s ease, opacity .2s ease, top .28s ease, bottom .28s ease;
+}
+.nav-toggle .line:first-child{ top:calc(50% - var(--bar-gap)); transform:translateY(-50%) }
+.nav-toggle .line:last-child { bottom:calc(50% - var(--bar-gap)); transform:translateY(50%) }
+/* X */
+.nav-toggle.open .line:first-child{ top:50%; transform:translateY(-50%) rotate(45deg) }
+.nav-toggle.open .line:last-child { bottom:auto; top:50%; transform:translateY(-50%) rotate(-45deg) }
+/* Visibilidad por breakpoint */
+@media (max-width:768px){ .nav-toggle{ display:block } }
+@media (min-width:769px){ .nav-toggle{ display:none } }
+/* Mantener botón arriba cuando el menú está abierto */
+body.menu-open .navbar{ z-index:10002 }
+body.menu-open .nav-toggle{
+  position:fixed; top:calc(env(safe-area-inset-top) + 12px); right:16px; z-index:10001;
+}
+
+/* =========================================================
+   HERO
+   ========================================================= */
+.hero{ padding:56px 20px 32px; text-align:center }
+.hero h1{
+  font-size:clamp(28px,5vw,46px);
+  margin-bottom:12px; line-height:1.2; letter-spacing:-.01em;
+}
+.hero p{ font-size:16px; opacity:.9; max-width:600px; margin:0 auto 28px }
+
+/* =========================================================
+   Lista de juegos (cards)
+   ========================================================= */
+.games-list{
+  max-width:1100px; margin:24px auto 60px; padding:0 16px;
+  display:grid; gap:16px;
+}
+.game-card{
+  display:grid;
+  grid-template-areas:"cover" "body" "cta";
+  gap:14px;
+  background:var(--card);
+  border:1px solid var(--cardBorder);
+  border-radius:20px;
+  padding:16px;
+  box-shadow:0 8px 28px rgba(0,0,0,.35);
+  transition:transform .15s ease, box-shadow .2s ease;
+}
+.game-card:hover{ transform:translateY(-2px); box-shadow:0 8px 30px rgba(0,0,0,.25) }
+/* Portada 16:9 */
+.game-cover{
+  grid-area:cover;
+  aspect-ratio:16/9;
+  border-radius:16px; overflow:hidden;
+  background:linear-gradient(135deg,#1b1b1e,#232327);
+  border:1px solid var(--cardBorder);
+  display:grid; place-items:center;
+  color:#cfcfcf; font-size:12px; letter-spacing:.2px;
+}
+.game-cover img{ width:100%; height:100%; object-fit:cover; display:block }
+/* Título + meta */
+.game-body{ grid-area:body; display:grid; gap:8px }
+.game-title{
+  font-size:20px; font-weight:800; letter-spacing:-.01em; line-height:1.25;
+}
+.game-meta{ color:#d2d2d2; font-size:14px }
+/* Precio + CTA */
+.game-cta{ grid-area:cta; display:grid; gap:10px; justify-items:start }
+.game-price{ font-size:24px; font-weight:900; color:#fff; margin-top:2px }
+
+.game-buy{
+  background:var(--accent);
+  color:#fff;
+  text-decoration:none;
+  font-weight:800;
+  padding:14px 18px;
+  border-radius:16px;
+  display:inline-flex;
+  align-items:center;
+  gap:10px; /* espacio entre el ícono y el texto */
+  transition:filter .15s ease, transform .15s ease;
+  transform:translateZ(0);
+}
+
+.game-buy .icon{
+  width:18px;
+  height:18px;
+  display:block;
+  filter:brightness(1.1);
+}
+
+.game-buy:hover{ filter:brightness(1.06); transform:translateY(-1px) }
+.game-buy:focus-visible{
+  outline:2px solid #fff;
+  outline-offset:2px;
+  box-shadow:0 0 0 3px rgba(124,77,255,.35);
+}
+
+.game-buy:hover{ filter:brightness(1.06); transform:translateY(-1px) }
+.game-buy:focus-visible{
+  outline:2px solid #fff; outline-offset:2px;
+  box-shadow:0 0 0 3px rgba(124,77,255,.35);
+}
+.game-buy:hover{ filter:brightness(1.06); transform:translateY(-1px) }
+.game-buy:focus-visible{
+  outline:2px solid #fff; outline-offset:2px;
+  box-shadow:0 0 0 3px rgba(124,77,255,.35);
+}
+@media (min-width:760px){
+  .game-card{ padding:18px; gap:16px }
+  .game-title{ font-size:22px }
+  .game-price{ font-size:26px }
+}
+@media (max-width:480px){
+  .game-buy{ min-width:56%; justify-content:center }
+}
+/* Accesibilidad: foco en toda la card */
+.game-card:focus-within{
+  box-shadow:0 0 0 2px var(--accent), 0 0 0 6px rgba(124,77,255,.35);
+  outline:none;
+}
+
+/* =========================================================
+   Footer
+   ========================================================= */
+footer{
+  border-top:1px solid var(--cardBorder);
+  padding:22px 20px;
+  color:#cfcfcf; text-align:center; opacity:.9; margin-top:40px;
+}
+
+/* =========================================================
+   Menú móvil (overlay)
+   ========================================================= */
+.nav-panel{
+  position:fixed; inset:0; z-index:1990;
+  background:rgba(0,0,0,.55); color:#fff;
+  opacity:0; visibility:hidden; pointer-events:none;
+  transition:opacity .28s ease, visibility 0s linear .28s;
+}
+.nav-panel.show{ opacity:1; visibility:visible; pointer-events:auto }
+.nav-panel.closing{ opacity:0; visibility:visible; pointer-events:none }
+.nav-fly{
+  position:absolute;
+  top:calc(56px + env(safe-area-inset-top));
+  left:12px; right:12px; bottom:12px;
+  background:#222;
+  border:1px solid var(--cardBorder);
+  border-radius:12px; padding:20px;
+  overflow:auto; -webkit-overflow-scrolling:touch;
+  transform:translateY(-8px);
+  opacity:.98;
+  box-shadow:0 20px 60px rgba(0,0,0,.45);
+}
+.nav-panel.closing .nav-fly{
+  transform:translateY(-10px) scaleY(.98);
+  opacity:0;
+  transition:transform .28s cubic-bezier(.22,.61,.36,1), opacity .28s ease;
+}
+.nav-fly a{
+  display:block; font-weight:800; font-size:26px; color:#fff; text-decoration:none;
+  padding:10px 6px; border-radius:12px;
+}
+.nav-fly a:hover{ background:rgba(255,255,255,.06) }
+.nav-fly .hr{ height:1px; background:var(--cardBorder); margin:14px 0 }
+/* Cuando hay panel abierto, bloquea scroll */
+html.scroll-lock, body.scroll-lock{ overflow:hidden; height:100% }
+body.scroll-lock{ position:fixed; width:100% }
+
+/* Safe areas (iPhone con notch) */
+@supports (padding:max(0px)){
+  .navbar{
+    padding-left:max(12px, env(safe-area-inset-left));
+    padding-right:max(12px, env(safe-area-inset-right));
+  }
+}
+
+/* =========================================================
+   Panel de búsqueda (lateral / fullscreen)
+   ========================================================= */
+.search-panel{
+  position:fixed; top:0; right:-100%;
+  width:min(420px,90vw); height:100dvh;
+  background:#26262a; color:#f2f2f2;
+  box-shadow:-10px 0 30px rgba(0,0,0,.35);
+  border-left:1px solid rgba(255,255,255,.08);
+  transition:right .28s ease; z-index:2000; padding:16px 18px;
+}
+.search-panel.open{ right:0 }
+.search-panel__header{
+  display:flex; align-items:center; justify-content:space-between; margin-bottom:10px;
+}
+.search-panel__header h3{ font-size:20px }
+.search-panel__header button{
+  background:transparent; border:0; font-size:22px; color:#fff; cursor:pointer;
+}
+.search-panel__body{ display:grid; gap:12px }
+.search-panel label{ display:grid; gap:6px; font-size:14px }
+.search-panel input{
+  background:#1e1e22; border:1px solid rgba(255,255,255,.1); border-radius:10px;
+  padding:10px 12px; color:#fff; font-size:15px;
+}
+.grid2{ display:grid; grid-template-columns:1fr 1fr; gap:12px }
+.actions{ display:flex; gap:10px; margin-top:8px }
+.primary{
+  background:#7c4dff; border:0; color:#fff; padding:10px 14px; border-radius:12px; cursor:pointer;
+}
+.ghost{
+  background:transparent; border:1px solid rgba(255,255,255,.2); color:#fff; padding:10px 14px; border-radius:12px; cursor:pointer;
+}
+/* Scrim del panel de búsqueda en desktop */
+.overlay{
+  position:fixed; inset:0; background:rgba(0,0,0,.4);
+  opacity:0; pointer-events:none; transition:opacity .2s; z-index:1995;
+}
+.overlay.show{ opacity:1; pointer-events:auto }
+
+/* ------- Mobile: panel fullscreen y contraste afinado ------- */
+@media (max-width: 768px){
+  /* Fullscreen y sin overlay adicional */
+  .search-panel{
+    width:100vw; right:-100vw; left:auto;
+    border-left:none; box-shadow:none;
+    background:#1b1b1d;
+    backdrop-filter:saturate(160%) blur(10px);
+    padding:0;
+  }
+  .search-panel.open{ right:0 }
+
+  /* Header fijo con safe-area */
+  .search-panel__header{
+    position:sticky; top:calc(env(safe-area-inset-top) + 6px); z-index:1;
+    display:flex; align-items:center; justify-content:space-between;
+    padding:12px 18px;
+    background:linear-gradient(180deg,#1b1b1d 0%, rgba(27,27,29,.92) 100%);
+    border-bottom:1px solid rgba(255,255,255,.06);
+    margin:0 0 8px;
+  }
+  .search-panel__header h3{ font-size:22px; font-weight:800; letter-spacing:-.01em }
+
+  /* Cuerpo con padding cómodo y campos legibles (>=16px evita zoom iOS) */
+  .search-panel__body{ padding:12px 18px 18px; gap:14px }
+  .search-panel input{
+    background:#232327; border:1px solid rgba(255,255,255,.12); color:#f7f7f7;
+    font-size:16px; height:44px; border-radius:12px;
+  }
+
+  /* En móvil, min/máx bajo una columna */
+  .grid2{ grid-template-columns:1fr }
+
+  /* Acciones “pegadas” al borde inferior con safe-area */
+  .actions{
+    position:sticky; bottom:calc(env(safe-area-inset-bottom) + 12px);
+    padding-top:8px;
+    background:linear-gradient(180deg, transparent 0%, rgba(27,27,29,.92) 36%);
+    gap:12px;
+  }
+  .primary,.ghost{ height:44px; border-radius:14px; padding:0 16px; font-weight:700 }
+
+  /* En móvil no usamos overlay adicional */
+  .overlay{ display:none }
+}
+
+/* =========================================================
+   Chips (filtros activos)
+   ========================================================= */
+.filter-chips{
+  max-width:1200px; margin:8px auto 0; padding:0 16px;
+  display:flex; flex-wrap:wrap; gap:8px; min-height:28px;
+}
+.chip{
+  display:inline-flex; align-items:center; gap:8px;
+  background:rgba(124,77,255,.12); border:1px solid rgba(124,77,255,.35);
+  color:#e9e7ff; padding:6px 10px; border-radius:999px; font-size:14px;
+}
+.chip.price{ background:rgba(255,255,255,.08); border-color:rgba(255,255,255,.14); color:#ddd }
+.chip .x{
+  border:0; background:transparent; color:inherit; cursor:pointer;
+  width:22px; height:22px; display:grid; place-items:center; border-radius:50%;
+}
+.chip .x:hover{ background:rgba(255,255,255,.12) }
+
+/* =========================================================
+   Movimiento / accesibilidad
+   ========================================================= */
+@media (prefers-reduced-motion:reduce){
+  .fp-card,.game-card,.game-buy,.nav-toggle .line,.search-btn .i,.nav-panel,.search-panel,.overlay{
+    transition:none !important;
+  }
+  .game-buy,.game-card{ transform:none !important }
+}
+
+/* =========================================================
+   Iconos inline (enlaces del menú)
+   ========================================================= */
+.icon-inline{
+  filter:brightness(1.1);
+  width:24px; height:24px;
+  vertical-align:middle; margin-right:10px; display:inline-block;
+}
+
+/* Rótulo "Filtro aplicado" que antecede a las chips */
+.chips-label{
+  font-size:12px;
+  font-weight:700;
+  text-transform:uppercase;
+  letter-spacing:.04em;
+  color:#cfcffb;
+  opacity:.85;
+  align-self:center;
+  margin-right:4px;
+}
