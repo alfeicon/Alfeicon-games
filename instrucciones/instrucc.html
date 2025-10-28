@@ -2,77 +2,217 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Instrucciones - Alfeicon Games</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Instrucciones Nintendo Switch — Alfeicon Games</title>
+  <meta name="description" content="Guía paso a paso para configurar usuarios en Nintendo Switch. Instrucciones visuales por Alfeicon Games." />
+  <meta name="theme-color" content="#0f0f10" />
+
   <style>
-    body {
-      background-color: #0f0f10;
-      color: #f1f1f1;
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-      margin: 0;
-      padding: 0;
-      text-align: center;
+    :root{
+      --bg:#0f0f10;
+      --bg2:#131316;
+      --text:#f1f1f1;
+      --muted:#a9abb2;
+      --accent:#30d158;
+      --radius:18px;
+      --card-shadow:0 10px 30px rgba(0,0,0,.4);
+    }
+    *{box-sizing:border-box}
+    html,body{margin:0;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Inter,system-ui,sans-serif}
+    a{color:inherit;text-decoration:none}
+    header{
+      position:sticky; top:0; z-index:10;
+      backdrop-filter:saturate(160%) blur(10px);
+      background:rgba(15,15,16,.75);
+      border-bottom:1px solid #1d1e22;
+    }
+    .topbar{
+      max-width:1100px; margin:auto;
+      display:flex; align-items:center; gap:12px;
+      padding:12px 16px;
+      flex-wrap:wrap;
+    }
+    .brand{display:flex; align-items:center; gap:10px; font-weight:700}
+    .dot{width:10px;height:10px;border-radius:50%;background:var(--accent)}
+    .spacer{flex:1}
+    .controls{display:flex; align-items:center; gap:8px; flex-wrap:wrap}
+    select,button,a.btn{
+      background:#1a1b20; color:#fff; border:1px solid #2a2c33;
+      padding:8px 10px; border-radius:10px; font-size:14px;
+      cursor:pointer; transition:all .25s ease;
+    }
+    button:hover,select:hover,a.btn:hover{border-color:#3a3d46; background:#202128;}
+    a.btn{display:inline-block}
+
+    main{max-width:980px;margin:18px auto;padding:0 14px 80px}
+    h1{font-size:clamp(20px,3vw,28px);margin:12px 0 18px}
+    .subtitle{color:var(--muted);font-size:14px;margin-bottom:22px}
+
+    .gallery{display:flex;flex-direction:column;gap:26px}
+    figure{
+      margin:0; background:var(--bg2); border:1px solid #1d1e22;
+      border-radius:var(--radius); overflow:hidden; box-shadow:var(--card-shadow);
+    }
+    .fig-head{
+      display:flex; align-items:center; justify-content:space-between;
+      padding:10px 14px; border-bottom:1px solid #1d1e22; color:var(--muted); font-size:14px;
+    }
+    .fig-head b{color:#fff}
+    .fig-body{padding:10px}
+    img.step{
+      width:100%; height:auto; display:block; border-radius:12px;
+      cursor:zoom-in; user-select:none;
+      transition:transform .25s ease;
+    }
+    figure:hover img.step{transform:scale(1.005)}
+    .hint{padding:10px 14px; color:#9aa0a6; font-size:12px; border-top:1px dashed #26272c}
+
+    .lightbox{
+      position:fixed; inset:0; background:rgba(0,0,0,.9);
+      display:none; align-items:center; justify-content:center;
+      z-index:100; padding:20px;
+    }
+    .lightbox.open{display:flex}
+    .lightbox img{max-width:96vw; max-height:92vh; border-radius:12px; box-shadow:0 20px 60px rgba(0,0,0,.6)}
+    .lightbox .close{
+      position:fixed; top:14px; right:14px;
+      background:#1a1b20; border:1px solid #2a2c33; color:#fff;
+      padding:8px 10px; border-radius:10px; cursor:pointer;
     }
 
-    h1 {
-      margin: 30px 0;
-      font-size: 1.8em;
+    .to-top{
+      position:fixed; right:16px; bottom:16px; z-index:9;
+      background:#1a1b20; border:1px solid #2a2c33; color:#fff;
+      padding:10px 12px; border-radius:14px; font-size:14px;
+      display:none;
     }
+    .to-top.show{display:inline-block}
 
-    .gallery {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 30px;
-      padding-bottom: 60px;
-    }
-
-    .gallery img {
-      width: 90%;
-      max-width: 850px;
-      border-radius: 16px;
-      box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
-      transition: transform 0.3s ease;
-      cursor: pointer;
-    }
-
-    .gallery img:hover {
-      transform: scale(1.02);
-    }
-
-    footer {
-      margin-top: 50px;
-      font-size: 0.9em;
-      color: #aaa;
-      padding-bottom: 40px;
-    }
+    footer{max-width:980px;margin:0 auto;padding:30px 14px;color:var(--muted);font-size:13px}
   </style>
 </head>
 <body>
-  <h1>📘 Instrucciones Nintendo Switch</h1>
+  <header>
+    <div class="topbar">
+      <div class="brand"><span class="dot"></span> Alfeicon Games</div>
 
-  <div class="gallery">
-    <img src="/instrucciones/ilovepdf_pages-to-jpg/Instrucciones_2025_alfeicongames_page-0001.jpg" alt="Página 1 de la guía de configuración de Nintendo Switch. Contiene el título y los primeros pasos ilustrados; tono instructivo y neutral." />
-    <img src="/instrucciones/ilovepdf_pages-to-jpg/Instrucciones_2025_alfeicongames_page-0002.jpg" alt="Página 2 de la guía de configuración de Nintendo Switch. Instrucciones paso a paso con diagramas y texto; tono informativo." />
-    <img src="/instrucciones/ilovepdf_pages-to-jpg/Instrucciones_2025_alfeicongames_page-0003.jpg" alt="Página 3 de la guía de configuración de Nintendo Switch. Pasos adicionales ilustrados para conexión y ajustes; tono claro y práctico." />
-    <img src="/instrucciones/ilovepdf_pages-to-jpg/Instrucciones_2025_alfeicongames_page-0004.jpg" alt="Página 4 de la guía de configuración de Nintendo Switch. Diagramas y notas sobre puertos y cables; tono instructivo." />
-    <img src="/instrucciones/ilovepdf_pages-to-jpg/Instrucciones_2025_alfeicongames_page-0005.jpg" alt="Página 5 de la guía de configuración de Nintendo Switch. Instrucciones visuales para montaje y comprobaciones; tono claro." />
-    <img src="/instrucciones/ilovepdf_pages-to-jpg/Instrucciones_2025_alfeicongames_page-0006.jpg" alt="Página 6 de la guía de configuración de Nintendo Switch. Capturas y pasos de configuración del sistema; tono informativo." />
-    <img src="/instrucciones/ilovepdf_pages-to-jpg/Instrucciones_2025_alfeicongames_page-0007.jpg" alt="Página 7 de la guía de configuración de Nintendo Switch. Indicaciones sobre controles y conexión a red; tono instructivo." />
-    <img src="/instrucciones/ilovepdf_pages-to-jpg/Instrucciones_2025_alfeicongames_page-0008.jpg" alt="Página 8 de la guía de configuración de Nintendo Switch. Pasos ilustrados para ajustes y comprobaciones finales; tono neutro." />
-    <img src="/instrucciones/ilovepdf_pages-to-jpg/Instrucciones_2025_alfeicongames_page-0009.jpg" alt="Página 9 de la guía de configuración de Nintendo Switch. Instrucciones detalladas y diagramas de soporte; tono práctico." />
-    <img src="/instrucciones/ilovepdf_pages-to-jpg/Instrucciones_2025_alfeicongames_page-0010.jpg" alt="Página 10 de la guía de configuración de Nintendo Switch. Pasos para configuración avanzada y consejos; tono didáctico." />
-    <img src="/instrucciones/ilovepdf_pages-to-jpg/Instrucciones_2025_alfeicongames_page-0011.jpg" alt="Página 11 de la guía de configuración de Nintendo Switch. Información complementaria y advertencias; tono informativo." />
-    <img src="/instrucciones/ilovepdf_pages-to-jpg/Instrucciones_2025_alfeicongames_page-0012.jpg" alt="Página 12 de la guía de configuración de Nintendo Switch. Diagramas y pasos adicionales; tono instructivo." />
-    <img src="/instrucciones/ilovepdf_pages-to-jpg/Instrucciones_2025_alfeicongames_page-0013.jpg" alt="Página 13 de la guía de configuración de Nintendo Switch. Pasos ilustrados y explicaciones; tono claro y práctico." />
-    <img src="/instrucciones/ilovepdf_pages-to-jpg/Instrucciones_2025_alfeicongames_page-0014.jpg" alt="Página 14 de la guía de configuración de Nintendo Switch. Instrucciones paso a paso y notas técnicas; tono neutro." />
-    <img src="/instrucciones/ilovepdf_pages-to-jpg/Instrucciones_2025_alfeicongames_page-0015.jpg" alt="Página 15 de la guía de configuración de Nintendo Switch. Ejemplos visuales y comprobaciones finales; tono instructivo." />
-    <img src="/instrucciones/ilovepdf_pages-to-jpg/Instrucciones_2025_alfeicongames_page-0016.jpg" alt="Página 16 de la guía de configuración de Nintendo Switch. Consejos de uso y resolución de problemas; tono práctico." />
-    <img src="/instrucciones/ilovepdf_pages-to-jpg/Instrucciones_2025_alfeicongames_page-0017.jpg" alt="Página 17 de la guía de configuración de Nintendo Switch. Resumen y cierre de la guía; tono informativo y accesible." />
+      <!-- 🔹 Nuevo botón para volver al menú principal -->
+      <a class="btn" href="/inicio/inicio.html">🏠 Ir al inicio</a>
+
+      <div class="spacer"></div>
+      <div class="controls">
+        <label for="jumper" style="color:#c9ccd4;font-size:13px;">Saltar a página:</label>
+        <select id="jumper" aria-label="Saltar a página"></select>
+        <button id="btnTop" title="Volver arriba">↑ Arriba</button>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <h1>📘 Instrucciones Nintendo Switch</h1>
+    <p class="subtitle">Guía visual para importar/registrar usuarios. Toca una imagen para ampliarla.</p>
+
+    <div id="gallery" class="gallery" aria-live="polite"></div>
+  </main>
+
+  <div id="lightbox" class="lightbox" role="dialog" aria-modal="true" aria-label="Imagen ampliada">
+    <button class="close" id="lbClose" title="Cerrar (Esc)">Cerrar ✕</button>
+    <img id="lbImg" alt="Vista ampliada" />
   </div>
 
-  <footer>
-    © 2025 Alfeicon Games — Guía de configuración
-  </footer>
+  <button class="to-top" id="floatTop" title="Volver arriba">↑</button>
+
+  <footer>© 2025 Alfeicon Games — Guía de configuración</footer>
+
+  <script>
+    // === Configuración ======================
+    const BASE = './ilovepdf_pages-to-jpg/';
+    const FILE_PREFIX = 'Instrucciones_2025_alfeicongames_page-';
+    const TOTAL_PAGES = 17;
+    // ========================================
+
+    const gallery = document.getElementById('gallery');
+    const jumper  = document.getElementById('jumper');
+    const btnTop  = document.getElementById('btnTop');
+    const floatTop= document.getElementById('floatTop');
+
+    for (let i=1; i<=TOTAL_PAGES; i++){
+      const opt = document.createElement('option');
+      opt.value = 'p' + i;
+      opt.textContent = `Página ${i}`;
+      jumper.appendChild(opt);
+    }
+
+    jumper.addEventListener('change', e=>{
+      const id = e.target.value;
+      const el = document.getElementById(id);
+      if(el){ el.scrollIntoView({behavior:'smooth', block:'start'}); }
+    });
+
+    btnTop.addEventListener('click', ()=>window.scrollTo({top:0,behavior:'smooth'}));
+    floatTop.addEventListener('click', ()=>window.scrollTo({top:0,behavior:'smooth'}));
+    window.addEventListener('scroll', ()=>{
+      (window.scrollY>800) ? floatTop.classList.add('show') : floatTop.classList.remove('show');
+    });
+
+    const pad4 = n => String(n).padStart(4,'0');
+    for (let i=1; i<=TOTAL_PAGES; i++){
+      const name = `${FILE_PREFIX}${pad4(i)}.jpg`;
+      const src  = `${BASE}${name}`;
+
+      const fig  = document.createElement('figure');
+      fig.id = 'p'+i;
+
+      const head = document.createElement('div');
+      head.className = 'fig-head';
+      head.innerHTML = `<b>Página ${i}</b><span>${name}</span>`;
+
+      const body = document.createElement('div');
+      body.className = 'fig-body';
+
+      const img = document.createElement('img');
+      img.className = 'step';
+      img.loading = 'lazy';
+      img.decoding = 'async';
+      img.src = src;
+      img.alt = `Página ${i} de la guía de configuración de Nintendo Switch (Alfeicon Games).`;
+
+      body.appendChild(img);
+
+      const hint = document.createElement('div');
+      hint.className = 'hint';
+      hint.textContent = 'Consejo: pellizca para hacer zoom en móvil o toca para abrir a pantalla completa.';
+
+      fig.appendChild(head);
+      fig.appendChild(body);
+      fig.appendChild(hint);
+      gallery.appendChild(fig);
+    }
+
+    // Lightbox
+    const lb = document.getElementById('lightbox');
+    const lbImg = document.getElementById('lbImg');
+    const lbClose = document.getElementById('lbClose');
+
+    gallery.addEventListener('click', e=>{
+      const target = e.target;
+      if(target.tagName === 'IMG'){
+        lbImg.src = target.src;
+        lb.classList.add('open');
+        document.body.style.overflow='hidden';
+      }
+    });
+    const closeLB = ()=>{
+      lb.classList.remove('open');
+      lbImg.src = '';
+      document.body.style.overflow='';
+    };
+    lb.addEventListener('click', e=>{ if(e.target===lb || e.target===lbClose) closeLB(); });
+    document.addEventListener('keydown', e=>{ if(e.key==='Escape') closeLB(); });
+
+    if(location.hash && document.getElementById(location.hash.slice(1))){
+      setTimeout(()=>document.getElementById(location.hash.slice(1)).scrollIntoView({behavior:'smooth'}), 80);
+    }
+  </script>
 </body>
 </html>
