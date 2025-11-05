@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>Panel de Cupones — Alfeicon Games</title>
+<style>
+  :root{
+    --bg:#0f1115; --card:#171a21; --muted:#9aa4b2; --accent:#7c4dff; --ok:#22c55e; --warn:#ef4444;
+    --br:14px; --b:1px solid rgba(255,255,255,.08);
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0; font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,sans-serif;
+    background:linear-gradient(180deg,#121318,#0e1014); color:#e8eef7;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .wrap{max-width:980px; margin:28px auto 60px; padding:0 16px}
+  h1{font-size:22px; margin:0}
+  h2{font-size:16px; letter-spacing:.2px; margin:0 0 8px; color:#dbe6ff; font-weight:800}
+  .card{background:var(--card); border:var(--b); border-radius:var(--br); padding:18px; box-shadow:0 10px 30px rgba(0,0,0,.35)}
+  .stack{display:grid; gap:16px}
+  .row{display:grid; grid-template-columns:1fr 1fr; gap:14px}
+  @media (max-width:840px){ .row{grid-template-columns:1fr} }
+
+  label{font-size:12px; color:var(--muted); display:block; margin-bottom:6px; font-weight:600; letter-spacing:.3px}
+  input,select,button,textarea{
+    width:100%; padding:14px 14px; border-radius:12px; border:1px solid rgba(255,255,255,.1);
+    background:#0f1218; color:#e8eef7; outline:none; font-weight:600;
+    font-size:16px; /* 👈 evita zoom en iOS */
+  }
+  input:focus,select:focus,textarea:focus{border-color:#2b2f3a; box-shadow:0 0 0 2px rgba(124,77,255,.25)}
+  .btn{cursor:pointer; background:linear-gradient(135deg,#7c4dff,#4a90e2); border:0; font-weight:800}
+  .btn.secondary{background:#222831}
+  .btn.ok{background:linear-gradient(135deg,#22c55e,#16a34a)}
+  .btn.warn{background:linear-gradient(135deg,#ef4444,#ef7b44)}
+  .muted{color:var(--muted); font-size:13px}
+  .section{display:grid; gap:10px}
+  .section + .section{margin-top:18px}
+
+  .actions{display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:12px}
+  @media (max-width:840px){ .actions{grid-template-columns:1fr 1fr} }
+  @media (max-width:420px){ .actions{grid-template-columns:1fr} }
+
+  .status{margin-top:10px; padding:12px; border-radius:12px; background:#10141b; border:var(--b); min-height:56px; display:grid; align-content:center}
+  .badge{display:inline-flex; gap:6px; align-items:center; font-size:12px; padding:6px 10px; border-radius:999px; border:1px solid rgba(255,255,255,.12); color:#cfd8e3}
+  .badge.ok{background:rgba(34,197,94,.08); border-color:rgba(34,197,94,.35)}
+  .badge.warn{background:rgba(239,68,68,.08); border-color:rgba(239,68,68,.35)}
+
+  .topbar{
+    position:sticky; top:0; z-index:5;
+    display:flex; align-items:center; justify-content:space-between; gap:10px; margin-bottom:14px;
+    padding:10px 12px; border-radius:12px;
+    background:rgba(23,26,33,.75); backdrop-filter: blur(8px);
+    border:1px solid rgba(255,255,255,.06);
+  }
+  .right{display:flex; gap:8px; align-items:center}
+  .hidden{display:none !important}
+  .login{max-width:440px; margin:50px auto}
+  .divider{height:1px; background:rgba(255,255,255,.08); margin:6px 0 2px; border-radius:1px}
+
+  /* Tabla cupones */
+  .table-wrap{
+    border:var(--b); border-radius:12px; background:#12161e; overflow:auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  table{width:100%; border-collapse:collapse; min-width:640px}
+  thead{background:#0f141c; position:sticky; top:0; z-index:1}
+  th,td{padding:12px 12px; border-bottom:1px solid rgba(255,255,255,.06); font-size:14px}
+  th{font-size:12px; color:#aeb7c5; letter-spacing:.3px; text-align:left}
+  tbody tr:hover{background:rgba(255,255,255,.03)}
+  .pill{display:inline-flex; align-items:center; gap:6px; padding:4px 10px; border-radius:999px; font-size:12px; border:1px solid rgba(255,255,255,.12)}
+  .pill.ACTIVO{background:rgba(34,197,94,.08); border-color:rgba(34,197,94,.35)}
+  .pill.BLOQUEADO{background:rgba(239,68,68,.08); border-color:rgba(239,68,68,.35)}
+  .pill.USADO{background:rgba(59,130,246,.08); border-color:rgba(59,130,246,.35)}
+
+  .toolbar{display:grid; grid-template-columns:1fr auto; gap:10px; align-items:end}
+  .toolbar .filters{display:grid; grid-template-columns:1fr 160px 120px; gap:10px}
+  @media (max-width:840px){
+    .toolbar{grid-template-columns:1fr}
+    .toolbar .filters{grid-template-columns:1fr 1fr}
+  }
+  @media (max-width:420px){
+    .toolbar .filters{grid-template-columns:1fr}
+  }
+  .pager{display:flex; gap:8px; align-items:center; justify-content:flex-end; flex-wrap:wrap}
+  .pager button{padding:10px 14px; border-radius:10px; border:1px solid rgba(255,255,255,.1); background:#1a1f28; color:#e8eef7; font-weight:700; cursor:pointer}
+  .pager span{color:#aeb7c5; font-size:13px}
+
+  /* Safe areas (iPhone con notch) */
+  @supports (padding:max(0px)){
+    .wrap{padding-left:max(16px, env(safe-area-inset-left)); padding-right:max(16px, env(safe-area-inset-right));}
+    .topbar{padding-left:max(12px, env(safe-area-inset-left)); padding-right:max(12px, env(safe-area-inset-right));}
+  }
+</style>
+</head>
+<body>
+<div class="wrap stack">
+
+  <!-- LOGIN -->
+  <div id="login-card" class="card login stack">
+    <h1>Acceso Panel (Privado)</h1>
+    <div class="section">
+      <div class="row">
+        <div class="section">
+          <label>Usuario</label>
+          <input id="in-user" placeholder="admin" autocomplete="username" />
+        </div>
+        <div class="section">
+          <label>Contraseña</label>
+          <input id="in-pass" type="password" placeholder="••••••••" autocomplete="current-password" />
+        </div>
+      </div>
+      <button id="btn-login" class="btn">Entrar</button>
+      <p class="muted">Este login es solo una capa visual. La seguridad real está en el <strong>ADMIN_TOKEN</strong> que valida tu Apps Script.</p>
+    </div>
+  </div>
+
+  <!-- PANEL -->
+  <div id="panel" class="card hidden stack">
+    <div class="topbar">
+      <h1 style="font-size:18px">Panel de cupones — Alfeicon Games</h1>
+      <div class="right">
+        <button id="btn-logout" class="btn secondary">Cerrar sesión</button>
+      </div>
+    </div>
+
+    <!-- Configuración -->
+    <div class="section">
+      <h2>Configuración</h2>
+      <div class="divider"></div>
+      <div class="row">
+        <div class="section">
+          <label>Endpoint Apps Script (doGet)</label>
+          <input id="in-endpoint" placeholder="https://script.google.com/macros/s/XXXXXXXX/exec" />
+          <div class="muted">Usa el URL implementado (el mismo que probaste con <code>?action=validate</code>).</div>
+        </div>
+        <div class="section">
+          <label>ADMIN_TOKEN</label>
+          <input id="in-token" type="password" placeholder="Pega tu token (se guarda en este navegador)" />
+          <div class="muted">Se guarda en <code>localStorage</code> del navegador.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Acciones rápidas -->
+    <div class="section">
+      <h2>Acciones rápidas</h2>
+      <div class="divider"></div>
+      <div class="row">
+        <div class="section">
+          <label>Código de cupón</label>
+          <input id="in-code" placeholder="Ej: ALF-TEST-001" />
+        </div>
+        <div class="section">
+          <label>Premio (solo para “Marcar como usado”)</label>
+          <input id="in-prize" placeholder="Ej: 15% OFF" />
+        </div>
+      </div>
+      <div class="actions">
+        <button class="btn" id="btn-validate">Validar</button>
+        <button class="btn ok" id="btn-enable">Activar</button>
+        <button class="btn warn" id="btn-disable">Bloquear</button>
+        <button class="btn" id="btn-used">Marcar como usado</button>
+      </div>
+    </div>
+
+    <!-- Estado -->
+    <div class="section">
+      <h2>Estado</h2>
+      <div class="divider"></div>
+      <div class="status" id="status">Estado: listo.</div>
+      <div class="muted">Estados en hoja <code>cupones</code>: <strong>ACTIVO</strong> | <strong>BLOQUEADO</strong> | <strong>USADO</strong>.</div>
+    </div>
+
+    <!-- Listado de cupones -->
+    <div class="section">
+      <h2>Listado de cupones</h2>
+      <div class="divider"></div>
+
+      <div class="toolbar">
+        <div class="filters">
+          <div>
+            <label>Buscar</label>
+            <input id="f-q" placeholder="Código o premio…" />
+          </div>
+          <div>
+            <label>Estado</label>
+            <select id="f-state">
+              <option value="ALL">Todos</option>
+              <option value="ACTIVO">ACTIVO</option>
+              <option value="USADO">USADO</option>
+              <option value="BLOQUEADO">BLOQUEADO</option>
+            </select>
+          </div>
+          <div>
+            <label>Límite</label>
+            <select id="f-limit">
+              <option>20</option>
+              <option selected>50</option>
+              <option>100</option>
+            </select>
+          </div>
+        </div>
+        <div class="pager">
+          <button id="btn-refresh">Recargar</button>
+          <button id="btn-prev">« Anterior</button>
+          <span id="page-info">0–0 de 0</span>
+          <button id="btn-next">Siguiente »</button>
+        </div>
+      </div>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th style="width:36%">Código</th>
+              <th style="width:16%">Estado</th>
+              <th style="width:28%">Premio</th>
+              <th style="width:20%">Fecha</th>
+            </tr>
+          </thead>
+          <tbody id="tbl-body">
+            <tr><td colspan="4" class="muted" style="padding:16px">Sin datos. Pulsa <b>Recargar</b>.</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+/* ========= LOGIN (cliente) ========= */
+const CFG_LOGIN = {
+  username: "bastian",
+  pass_hash: "170842" // ejemplo
+};
+function simpleHash(s){ let h=0; for(let i=0;i<s.length;i++){ h=(h<<5)-h + s.charCodeAt(i); h|=0; } return h.toString(16); }
+
+const elLogin = document.getElementById("login-card");
+const elPanel = document.getElementById("panel");
+const elUser  = document.getElementById("in-user");
+const elPass  = document.getElementById("in-pass");
+const btnLogin= document.getElementById("btn-login");
+const btnLogout=document.getElementById("btn-logout");
+
+function showPanel(){ elLogin.classList.add("hidden"); elPanel.classList.remove("hidden"); }
+function showLogin(){ elPanel.classList.add("hidden"); elLogin.classList.remove("hidden"); }
+
+btnLogin.addEventListener("click", ()=>{
+  const u = (elUser.value||"").trim();
+  const p = (elPass.value||"");
+  if (u===CFG_LOGIN.username && simpleHash(p)===CFG_LOGIN.pass_hash){
+    localStorage.setItem("admin_logged","1");
+    showPanel(); loadList(true);
+  } else {
+    alert("Usuario o contraseña inválidos");
+  }
+});
+btnLogout.addEventListener("click", ()=>{
+  localStorage.removeItem("admin_logged");
+  showLogin();
+});
+if (localStorage.getItem("admin_logged")==="1") { showPanel(); }
+
+/* ========= PANEL ========= */
+const $ = s => document.querySelector(s);
+const endpoint = $("#in-endpoint");
+const token    = $("#in-token");
+const code     = $("#in-code");
+const prize    = $("#in-prize");
+const statusBox= $("#status");
+
+endpoint.value = localStorage.getItem("endpoint") || "";
+token.value    = localStorage.getItem("admin_token") || "";
+
+endpoint.addEventListener("change", ()=>localStorage.setItem("endpoint", endpoint.value.trim()));
+token.addEventListener("change", ()=>localStorage.setItem("admin_token", token.value.trim()));
+
+function ensureCfg(){
+  const ep = endpoint.value.trim();
+  if (!ep){ alert("Configura el Endpoint"); return null; }
+  return ep;
+}
+function setStatus(html){ statusBox.innerHTML = html; }
+
+async function callAPI(params){
+  const ep = ensureCfg(); if (!ep) return null;
+  const url = ep + "?" + new URLSearchParams(params).toString();
+  const res = await fetch(url, { method:"GET", cache:"no-store" });
+  if (!res.ok) throw new Error("HTTP "+res.status);
+  return await res.json();
+}
+
+/* === Acciones rápidas === */
+$("#btn-validate").addEventListener("click", async ()=>{
+  try{
+    const c = code.value.trim().toUpperCase();
+    if (!c) return alert("Ingresa un código");
+    const data = await callAPI({action:"validate", code:c});
+    setStatus(`<span class="badge ${data.ok?'ok':'warn'}">VALIDATE</span> — ${JSON.stringify(data)}`);
+  }catch(e){ setStatus(`<span class="badge warn">ERROR</span> — ${e}`); }
+});
+$("#btn-enable").addEventListener("click", async ()=>{
+  try{
+    const c = code.value.trim().toUpperCase();
+    const t = token.value.trim();
+    if (!c||!t) return alert("Código y token requeridos");
+    const data = await callAPI({action:"enable", code:c, token:t});
+    setStatus(`<span class="badge ok">ENABLE</span> — ${JSON.stringify(data)}`);
+    await loadList();
+  }catch(e){ setStatus(`<span class="badge warn">ERROR</span> — ${e}`); }
+});
+$("#btn-disable").addEventListener("click", async ()=>{
+  try{
+    const c = code.value.trim().toUpperCase();
+    const t = token.value.trim();
+    if (!c||!t) return alert("Código y token requeridos");
+    const data = await callAPI({action:"disable", code:c, token:t});
+    setStatus(`<span class="badge warn">DISABLE</span> — ${JSON.stringify(data)}`);
+    await loadList();
+  }catch(e){ setStatus(`<span class="badge warn">ERROR</span> — ${e}`); }
+});
+$("#btn-used").addEventListener("click", async ()=>{
+  try{
+    const c = code.value.trim().toUpperCase();
+    const p = prize.value.trim();
+    if (!c) return alert("Código requerido");
+    const data = await callAPI({action:"markUsed", code:c, prize:p});
+    setStatus(`<span class="badge">USED</span> — ${JSON.stringify(data)}`);
+    await loadList();
+  }catch(e){ setStatus(`<span class="badge warn">ERROR</span> — ${e}`); }
+});
+
+/* === Listado de cupones === */
+const fQ     = $("#f-q");
+const fState = $("#f-state");
+const fLimit = $("#f-limit");
+const btnRefresh = $("#btn-refresh");
+const btnPrev = $("#btn-prev");
+const btnNext = $("#btn-next");
+const pageInfo = $("#page-info");
+const tbody = $("#tbl-body");
+
+let offset = 0;
+
+async function loadList(reset=false){
+  try{
+    const t = token.value.trim();
+    if (!t){
+      tbody.innerHTML = `<tr><td colspan="4" class="muted" style="padding:16px">Ingresa tu <b>ADMIN_TOKEN</b> arriba.</td></tr>`;
+      return;
+    }
+    if (reset) offset = 0;
+    const limit = parseInt(fLimit.value,10) || 50;
+    const params = {
+      action: "list",
+      token: t,
+      state: fState.value,
+      q: fQ.value.trim(),
+      limit: limit,
+      offset: offset
+    };
+    const data = await callAPI(params);
+    if (!data || !data.ok){ throw new Error(JSON.stringify(data)); }
+
+    renderTable(data.items || []);
+    const end = Math.min(offset + limit, data.total || 0);
+    const start = data.total ? offset + 1 : 0;
+    pageInfo.textContent = `${start}–${end} de ${data.total || 0}`;
+    btnPrev.disabled = (offset === 0);
+    btnNext.disabled = (end >= (data.total || 0));
+  }catch(e){
+    tbody.innerHTML = `<tr><td colspan="4" class="muted" style="padding:16px">Error cargando lista: ${e}</td></tr>`;
+  }
+}
+
+function renderTable(items){
+  if (!items.length){
+    tbody.innerHTML = `<tr><td colspan="4" class="muted" style="padding:16px">Sin resultados.</td></tr>`;
+    return;
+  }
+  tbody.innerHTML = items.map(row=>{
+    const fecha = row.fecha ? new Date(row.fecha).toLocaleString() : '—';
+    return `<tr>
+      <td><code>${row.code}</code></td>
+      <td><span class="pill ${row.state}">${row.state}</span></td>
+      <td>${row.prize || '—'}</td>
+      <td>${fecha}</td>
+    </tr>`;
+  }).join("");
+}
+
+btnRefresh.addEventListener("click", ()=>loadList(true));
+fQ.addEventListener("input", ()=>loadList(true));
+fState.addEventListener("change", ()=>loadList(true));
+fLimit.addEventListener("change", ()=>loadList(true));
+btnPrev.addEventListener("click", ()=>{ offset = Math.max(0, offset - parseInt(fLimit.value||50,10)); loadList(); });
+btnNext.addEventListener("click", ()=>{ offset += parseInt(fLimit.value||50,10); loadList(); });
+</script>
+</body>
+</html>
