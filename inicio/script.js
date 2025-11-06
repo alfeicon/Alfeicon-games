@@ -155,6 +155,7 @@ function loadPacksPreview(){
 }
 document.addEventListener('DOMContentLoaded', loadPacksPreview);
 
+
 // ==========================================
 // === RULETA DE DESCUENTOS (modal Home) ====
 // === Conexión a Apps Script: validar/claim ===
@@ -163,19 +164,33 @@ document.addEventListener('DOMContentLoaded', loadPacksPreview);
   // ---------- Backend (TU Apps Script) ----------
   const GAS_URL = "https://script.google.com/macros/s/AKfycbwkTRd_As56mgq6eEkNOyrRY80D4A-dcR7Alrf34Xz_wTHEGS4NNZMexZLpYenmPlo_/exec";
 
-  // ---------- Premios + probabilidades (reales) ----------
-  // Ajusta los "weight" si quieres cambiar probabilidades:
-  // más weight => más probable.
-const SEGMENTS = [
-  { label: "Sin premio 😅", weight: 60 },
-  { label: "10%\nOFF",     weight: 20 },
-  { label: "25%\nOFF",     weight: 10 },
-  { label: "50%\nOFF",     weight: 6  },
-  { label: "100%\nOFF",    weight: 0.5 }
-];
+  // ---------- Segmentos VISUALES (todos del mismo tamaño) ----------
+  // Se dibujan 12 porciones idénticas y bonitas.
+  const SEGMENTS = [
+    "10%\nOFF",
+    "25%\nOFF",
+    "50%\nOFF",
+    "Sin premio 😅",
+    "10%\nOFF",
+    "25%\nOFF",
+    "Sin premio 😅",
+    "50%\nOFF",
+    "10%\nOFF",
+    "Sin premio 😅",
+    "25%\nOFF",
+    "100%\nOFF"
+  ];
 
-  // Mínimo visual por segmento (solo estética, no cambia probabilidades reales)
-  const MIN_VISUAL_PCT = 0.08;
+  // ---------- Pesos REALES (probabilidades invisibles) ----------
+  // Ajusta estos valores: se normalizan automáticamente.
+  // Recomendado para 3 giros máx por persona (sesgo a “Sin premio”)
+  const WEIGHTS = {
+    "Sin premio 😅": 0.70,
+    "10%\nOFF":      0.20,
+    "25%\nOFF":      0.08,
+    "50%\nOFF":      0.02,
+    "100%\nOFF":     0.001
+  };
 
   // ---------- DOM ----------
   const $ = s => document.querySelector(s);
@@ -195,7 +210,7 @@ const SEGMENTS = [
 
   // ---------- Utils ----------
   const vibrate = ms => { try{ navigator.vibrate && navigator.vibrate(ms); }catch{} };
-  const USED_KEY = "alfeicon_ruleta_used_local"; // candado local por navegador
+  const USED_KEY = "alfeicon_ruleta_used_local";
   const usedList = () => { try{ return JSON.parse(localStorage.getItem(USED_KEY)||"[]"); }catch{ return []; } };
   const isUsedLocal  = code => usedList().some(x=>x.code===code);
   const markUsedLocal = (code, prize) => {
@@ -211,13 +226,13 @@ const SEGMENTS = [
     const url = `${GAS_URL}?action=validate&code=${encodeURIComponent(code)}&_=${Date.now()}`;
     const r = await fetch(url, { method:"GET" });
     if (!r.ok) throw new Error("Network error");
-    return r.json(); // { ok, code, state, premio, fecha }
+    return r.json();
   }
   async function apiClaim(code, prize){
     const url = `${GAS_URL}?action=claim&code=${encodeURIComponent(code)}&prize=${encodeURIComponent(prize)}&_=${Date.now()}`;
     const r = await fetch(url, { method:"GET" });
     if (!r.ok) throw new Error("Network error");
-    return r.json(); // { ok, code, state:"USADO", prize, fecha } o { ok:false, error, state }
+    return r.json();
   }
 
   // ---------- Modal ----------
@@ -230,7 +245,7 @@ const SEGMENTS = [
   elBackdrop?.addEventListener("click", closeModal);
   document.addEventListener("keydown", e=>{ if(e.key==="Escape" && elModal.getAttribute("aria-hidden")==="false") closeModal(); });
 
-  // ---------- Validación cupón (contra GAS) ----------
+  // ---------- Validación cupón ----------
   elCoupon?.addEventListener("input", ()=>{ elCoupon.value = elCoupon.value.toUpperCase(); });
   elCoupon?.addEventListener("keydown", e=>{ if (e.key==="Enter") elValidate?.click(); });
 
@@ -248,7 +263,6 @@ const SEGMENTS = [
     elStatus.className="badge"; elStatus.textContent="Validando…";
     try{
       const res = await apiValidate(code);
-      // Estados: ACTIVO | BLOQUEADO | USADO | NO_ENCONTRADO
       if (!res.ok || res.state === "NO_ENCONTRADO"){
         elStatus.className="badge warn"; elStatus.textContent="Cupón inválido";
         elSpin.disabled=true; currentCoupon=null; vibrate(60); return;
@@ -261,7 +275,6 @@ const SEGMENTS = [
         elStatus.className="badge warn"; elStatus.textContent="Cupón bloqueado";
         elSpin.disabled=true; currentCoupon=null; vibrate(60); return;
       }
-      // ACTIVO ⇒ OK
       currentCoupon = code;
       elStatus.className="badge success"; elStatus.textContent="Cupón válido ✓ Puedes girar";
       elSpin.disabled=false; vibrate(20);
@@ -287,28 +300,18 @@ const SEGMENTS = [
   const radius = center - 12;
   let angleStart = 0;
 
+  // Paleta multicolor para los segmentos (puedes ajustar)
+  const SEG_COLORS = [
+    "#FFE9A8","#BFE6FF","#FFD1F1","#C7F4D1",
+    "#FDD6A3","#D5C7FF","#C8F0FF","#FFE6C1",
+    "#F8C9D4","#D9FFCF","#FFE3FF","#CDE6FF"
+  ];
   const textColor = "#202020";
-  const segFillA = "#fefefe";
-  const segFillB = "#f9f9f9";
 
-  // ---------- Cálculo de porciones visuales (con mínimo) ----------
-  function getProbPortions() {
-    const total = SEGMENTS.reduce((a,b)=>a+b.weight,0);
-    return SEGMENTS.map(s => s.weight / total);
-  }
-  function getVisualPortions(minPct = MIN_VISUAL_PCT) {
-    const n = SEGMENTS.length;
-    const safeMin = Math.min(minPct, 1 / n - 0.0001);
-    const probs = getProbPortions();
-    const mins  = Array(n).fill(safeMin);
-    let pool    = 1 - (safeMin * n);
-    if (pool <= 0) return Array(n).fill(1/n);
-    const probSum = probs.reduce((a,b)=>a+b,0);
-    const scaled = probs.map(p => (p / probSum) * pool);
-    return scaled.map((v,i)=> v + mins[i]);
-  }
-  let visualPortions = getVisualPortions();
-  window.addEventListener("resize", () => { visualPortions = getVisualPortions(); drawWheel(); });
+  // ---------- Porciones visuales (todas iguales) ----------
+  function getUniformPortions(n){ return Array(n).fill(1/n); }
+  let visualPortions = getUniformPortions(SEGMENTS.length);
+  window.addEventListener("resize", () => { visualPortions = getUniformPortions(SEGMENTS.length); drawWheel(); });
 
   // ---------- Dibujo ----------
   function drawWheel(){
@@ -322,17 +325,20 @@ const SEGMENTS = [
       const s = startAng;
       const e = startAng + angle;
 
+      // Relleno multicolor
       ctx.beginPath();
       ctx.moveTo(center,center);
       ctx.arc(center,center, radius, s, e);
       ctx.closePath();
-      ctx.fillStyle = (i % 2 === 0) ? segFillA : segFillB;
+      ctx.fillStyle = SEG_COLORS[i % SEG_COLORS.length];
       ctx.fill();
 
-      ctx.strokeStyle = "rgba(0,0,0,.08)";
+      // Separador
+      ctx.strokeStyle = "rgba(0,0,0,.12)";
       ctx.lineWidth = 2;
       ctx.stroke();
 
+      // Texto
       const mid = s + angle/2;
       ctx.save();
       ctx.translate(center,center);
@@ -340,10 +346,9 @@ const SEGMENTS = [
       ctx.textAlign = "right";
       ctx.textBaseline = "middle";
       ctx.fillStyle = textColor;
-      const deg = angle * (180/Math.PI);
-      const fontSize = Math.max(16, Math.min(22, (deg/30)*18));
+      const fontSize = 18;
       ctx.font = `900 ${fontSize}px Inter, system-ui`;
-      const lines = SEGMENTS[i].label.split("\n");
+      const lines = String(SEGMENTS[i]).split("\n");
       const lineGap = fontSize * 1.2;
       const textR = radius - 20;
       lines.forEach((line, j) => {
@@ -357,21 +362,42 @@ const SEGMENTS = [
   }
   drawWheel();
 
-  // ---------- Selección determinística por cupón (probabilidad real) ----------
+  // ---------- Hash y helpers de probabilidad ----------
   function hash32(str){ let h = 2166136261 >>> 0; for (let i=0;i<str.length;i++){ h ^= str.charCodeAt(i); h = Math.imul(h, 16777619); } return h >>> 0; }
-  function seededIndex(code){
-    const seed  = hash32(code);
-    const probs = getProbPortions();
-    const r = (seed % 100000) / 100000;
-    let acc = 0;
-    for (let i=0;i<probs.length;i++){
-      acc += probs[i];
-      if (r <= acc) return i;
-    }
-    return probs.length - 1;
+
+  // Normaliza el mapa de pesos → pares [label, prob]
+  function normalizedWeights(){
+    const entries = Object.entries(WEIGHTS);
+    const sum = entries.reduce((a,[,w])=>a+(+w||0),0) || 1;
+    return entries.map(([k,w]) => [k, (+w||0)/sum]);
   }
 
-  // ---------- Mapeo índice → ángulo usando porciones visuales ----------
+  // Elige el LABEL por pesos usando r∈[0,1) determinístico por cupón
+  function pickLabelByWeight(code){
+    const r = (hash32(code) % 100000) / 100000; // determinístico
+    const list = normalizedWeights();
+    let acc = 0;
+    for (const [label, p] of list){
+      acc += p;
+      if (r < acc) return label;
+    }
+    return list[list.length-1][0];
+  }
+
+  // Entre los índices que muestran ese LABEL, elige uno de forma determinística
+  function pickIndexForLabel(code, label){
+    const candidates = SEGMENTS
+      .map((lab, i) => lab === label ? i : -1)
+      .filter(i => i >= 0);
+    if (candidates.length === 0) {
+      // Si no hay segmento con ese label (p.ej., 100% OFF retirado)
+      return hash32(code + "|fallback") % SEGMENTS.length;
+    }
+    const h = hash32(code + "|idx");
+    return candidates[h % candidates.length];
+  }
+
+  // ---------- Mapeo índice → ángulo ----------
   function angleForIndex(idx){
     let acc = 0;
     for (let i=0;i<idx;i++) acc += visualPortions[i];
@@ -387,7 +413,6 @@ const SEGMENTS = [
   // =========================================================
   // =============== CONFETTI / SERPENTINA ===================
   // =========================================================
-  // Crea un canvas overlay temporal para dibujar confetti
   function makeOverlayCanvas(){
     let c = document.getElementById("confetti-layer");
     if (!c){
@@ -414,7 +439,7 @@ const SEGMENTS = [
     return colors[Math.floor(Math.random()*colors.length)];
   }
   function randomGray(){
-    const g = Math.floor(100 + Math.random()*80); // 100–180
+    const g = Math.floor(100 + Math.random()*80);
     return `rgb(${g},${g},${g})`;
   }
 
@@ -441,7 +466,6 @@ const SEGMENTS = [
         ctxC.fillRect(-p.size/2, -p.size/2, p.size, p.size*0.6);
         ctxC.restore();
       }
-      // elimina muertos
       for (let i=particles.length-1;i>=0;i--){
         const p = particles[i];
         if (p.life<=0 || p.y > innerHeight+50) particles.splice(i,1);
@@ -450,19 +474,16 @@ const SEGMENTS = [
       if (elapsed < durationMs && particles.length){
         requestAnimationFrame(frame);
       } else {
-        // limpiar al final
         ctxC.clearRect(0,0,layer.width,layer.height);
-        // no removemos el canvas: se reutiliza para próximos disparos
       }
     }
     requestAnimationFrame(frame);
   }
 
-  // Serpentina colorida (ganadores)
   function launchSerpentinaBurst(x, y, count=160, gravity=0.12){
     const particles = [];
     for (let i=0;i<count;i++){
-      const a  = (-Math.PI/2) + (Math.random()-0.5)*Math.PI*1.6; // abanico amplio
+      const a  = (-Math.PI/2) + (Math.random()-0.5)*Math.PI*1.6;
       const sp = 3 + Math.random()*4;
       particles.push({
         x, y,
@@ -479,13 +500,12 @@ const SEGMENTS = [
     animateConfetti(particles, 2000);
   }
 
-  // Confetti gris (sin premio)
   function launchSadConfettiBurst(x, y, count=70, gravity=0.18){
     const particles = [];
     const angleBase = -Math.PI/2;
     for (let i=0;i<count;i++){
-      const a  = angleBase + (Math.random()-0.5)*Math.PI*0.8; // abanico más estrecho
-      const sp = 2 + Math.random()*3; // más lento
+      const a  = angleBase + (Math.random()-0.5)*Math.PI*0.8;
+      const sp = 2 + Math.random()*3;
       particles.push({
         x, y,
         vx: Math.cos(a)*sp,
@@ -518,7 +538,6 @@ const SEGMENTS = [
       launchSadConfettiBurst(x, y, 70, 0.18);
       return;
     }
-    // Intensidad según % de descuento
     let count = 120, gravity=0.12;
     if (/80%/i.test(prizeText))      { count = 220; gravity = 0.10; }
     else if (/50%/i.test(prizeText)) { count = 180; gravity = 0.11; }
@@ -527,14 +546,16 @@ const SEGMENTS = [
     launchSerpentinaBurst(x, y, count, gravity);
   }
 
-  // ---------- Giro ----------
+  // ---------- Giro (usa pesos reales pero aterriza en un segmento igual) ----------
   async function spin(){
     if (spinning || !currentCoupon) return;
     spinning = true;
     elSpin.disabled = true;
 
-    const idx    = seededIndex(currentCoupon);   // selección REAL
-    const target = angleForIndex(idx);           // posición VISUAL
+    // Premio por pesos (invisible) + segmento que lo muestra (determinístico por cupón)
+    const label  = pickLabelByWeight(currentCoupon);
+    const idx    = pickIndexForLabel(currentCoupon, label);
+    const target = angleForIndex(idx);
     const extra  = Math.PI * 2 * (3 + Math.floor(Math.random() * 3)); // 3–5 vueltas
     const totalRotation = target + extra;
 
@@ -556,9 +577,8 @@ const SEGMENTS = [
 
     async function finish(){
       angleStart %= (Math.PI*2);
-      const prizeText = SEGMENTS[idx].label.replace(/\n/g," ");
+      const prizeText = String(label).replace(/\n/g," ");
 
-      // Canje atómico en el backend ANTES de mostrar premio
       try{
         const claim = await apiClaim(currentCoupon, prizeText);
         if (claim.ok) {
