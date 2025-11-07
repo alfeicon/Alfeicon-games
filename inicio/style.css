@@ -612,7 +612,7 @@ footer{
   box-shadow: 0 0 0 4px rgba(124, 77, 255, 0.25);
 }
 
-/* === Reduce motion si el usuario lo pide === */
+/* === Reduce motion si el usuario lo pide (ruleta) === */
 @media (prefers-reduced-motion: reduce) {
   .btn-ruleta,
   .spin-btn {
@@ -671,4 +671,206 @@ footer{
   .coupon-banner, .ruleta-banner{grid-template-columns:1fr; gap:14px; padding:16px}
   .cb-right, .rb-right{justify-items:start}
   .cb-title, .rb-title{font-size:1.35rem}
+}
+
+/* 💰 Estilo final perfecto de precios tipo packs */
+.price {
+  display: flex;
+  align-items: baseline;
+  justify-content: flex-start;
+  gap: 8px;
+  font-weight: 900;
+  font-size: clamp(18px, 2vw, 21px);
+  letter-spacing: 0.3px;
+  margin-top: 6px;
+}
+
+.price .now {
+  color: #22c55e; /* verde de oferta */
+  font-weight: 900;
+  font-size: 1em; /* mantiene tamaño principal */
+}
+
+.price .old {
+  color: #a9abb3;
+  opacity: 0.6;
+  text-decoration: line-through;
+  font-size: 0.8em; /* más pequeño */
+  font-weight: 700;
+  margin-left: 4px;
+  text-decoration-thickness: 2px; /* línea más marcada */
+  text-decoration-color: rgba(255, 255, 255, 0.4);
+}
+
+/* Alineación consistente dentro de cards */
+.news-card .price {
+  justify-content: flex-start;
+  align-items: baseline;
+}
+
+/* 💰 Ajuste fino de separación entre precios */
+.price {
+  display: flex;
+  align-items: baseline;
+  justify-content: flex-start;
+  gap: 10px;              /* 🔹 antes era 8px, ahora da más aire */
+  font-weight: 900;
+  font-size: clamp(18px, 2vw, 21px);
+  letter-spacing: 0.3px;
+  margin-top: 6px;
+}
+
+.price .now {
+  color: #22c55e;
+  font-weight: 900;
+  font-size: 1em;
+}
+
+.price .old {
+  color: #a9abb3;
+  opacity: 0.6;
+  text-decoration: line-through;
+  font-size: 0.78em;      /* 🔹 un poco más pequeño */
+  font-weight: 700;
+  text-decoration-thickness: 1.8px;
+  text-decoration-color: rgba(255, 255, 255, 0.4);
+  margin-left: 2px;       /* 🔹 sutil margen interno */
+}
+
+/* Alineación estética en cards */
+.news-card .price {
+  justify-content: flex-start;
+  align-items: baseline;
+}
+
+
+/* 🧩 Separación entre precio y botón */
+.news-card .price {
+  margin-bottom: 10px;   /* 🔹 antes no tenía margen inferior */
+}
+
+/* 🎠 Novedades tipo carrusel horizontal (igual que los packs) */
+.news-grid {
+  display: flex;
+  gap: 16px;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+  padding-bottom: 8px;
+  scroll-padding: 10px;
+}
+
+.news-grid::-webkit-scrollbar {
+  height: 8px;
+}
+
+.news-grid::-webkit-scrollbar-thumb {
+  background: rgba(255,255,255,0.15);
+  border-radius: 999px;
+}
+
+/* 🔹 Cada tarjeta se alinea al centro del carrusel */
+.news-card {
+  flex: 0 0 280px; /* ancho fijo, igual que los packs */
+  scroll-snap-align: center;
+  background: var(--card);
+  border: 1px solid var(--cardBorder);
+  border-radius: 16px;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  transition: transform 0.15s ease, box-shadow 0.2s ease;
+}
+
+.news-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+}
+
+/* === Carrusel con “peek” (solo móvil) === */
+@media (max-width: 640px){
+  /* Cambia la grilla por un carrusel horizontal */
+  .news-grid{
+    display:flex !important;          /* sobreescribe el grid */
+    gap:12px;
+    overflow-x:auto;
+    scroll-snap-type:x mandatory;
+    -webkit-overflow-scrolling:touch;
+    padding: 0 12px 12px;              /* deja borde para ver el “peek” */
+  }
+  /* Cada card ocupa un poco menos del 100% para que se asome la siguiente */
+  .news-card{
+    flex: 0 0 calc(100% - 68px);       /* ← ajusta 68px si quieres ver más/menos */
+    scroll-snap-align:center;
+  }
+  /* Espaciador al final para que la última no quede pegada al borde */
+  .news-grid::after{
+    content:"";
+    flex: 0 0 12px;
+  }
+}
+
+/* ========= Carrusel: “nudge” automático + hint animado ========= */
+.news-grid-wrap{ position: relative; }
+
+/* Empujón visual (no scroll real) para sugerir deslizamiento */
+.news-grid.autonudge{
+  will-change: transform;
+  animation: nudge-x 2100ms ease-out 1200ms 1 both; /* 1 sola vez, con leve delay */
+}
+@keyframes nudge-x{
+  0%   { transform: translateX(0); }
+  18%  { transform: translateX(-22px); }
+  36%  { transform: translateX(0); }
+  56%  { transform: translateX(-14px); }
+  100% { transform: translateX(0); }
+}
+
+/* Brillo que recorre el texto (muy sutil) */
+.slide-hint{
+  position: absolute;
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 20%, #000 80%, transparent);
+          mask-image: linear-gradient(90deg, transparent, #000 20%, #000 80%, transparent);
+}
+.slide-hint.auto-hide{
+  animation: hint-fade 1s ease-in 5s forwards; /* se oculta solo después de 5s */
+}
+@keyframes hint-fade{ to { opacity:0; visibility:hidden; } }
+
+/* Respeto por accesibilidad */
+@media (prefers-reduced-motion: reduce){
+  .news-grid.autonudge{ animation: none; }
+  .slide-hint::after{ animation: none; }
+  .slide-hint.auto-hide{ animation: hint-fade 1s ease-in 4s forwards; }
+}
+
+/* ===== “Desliza →” bajo el título Novedades (ajustado) ===== */
+.slide-hint-top {
+  font-weight: 700;
+  color: #0aef3f;
+  opacity: 0.9;
+  font-size: 0.95rem;
+  margin: 6px 0 14px 8px; /* ← más espacio arriba y abajo */
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  animation: hint-bounce 1.5s ease-in-out infinite;
+  user-select: none;
+}
+
+.slide-hint-top::after {
+  content: "→";
+  display: inline-block;
+  animation: hint-arrow 1.3s ease-in-out infinite;
+}
+
+@keyframes hint-bounce {
+  0%, 100% { opacity: 0.85; transform: translateX(0); }
+  50% { opacity: 1; transform: translateX(4px); }
+}
+
+@keyframes hint-arrow {
+  0%, 100% { transform: translateX(0); opacity: 1; }
+  50% { transform: translateX(6px); opacity: 0.9; }
 }

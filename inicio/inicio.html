@@ -4,9 +4,19 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <title>Alfeicon Games — Inicio</title>
+
+  <!-- Fuente -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+
+  <!-- Meta (SEO/Share) -->
+  <meta name="description" content="Juegos digitales para Nintendo Switch con entrega inmediata. Ofertas, packs y soporte por WhatsApp en Alfeicon Games.">
+  <meta property="og:title" content="Alfeicon Games — Juegos digitales Nintendo Switch">
+  <meta property="og:description" content="Descubre ofertas y packs exclusivos con entrega inmediata.">
+  <meta name="theme-color" content="#7c4dff">
+
+  <!-- CSS global -->
   <link rel="stylesheet" href="./style.css" />
 </head>
 <body>
@@ -18,10 +28,10 @@
       <span class="logo-text">Alfeicon Games</span>
     </a>
 
-    <div class="nav-social">
-      <a href="https://wa.me/56926411278" target="_blank" aria-label="WhatsApp">💬</a>
-      <a href="https://instagram.com/alfeicon.games" target="_blank" aria-label="Instagram">📷</a>
-      <a href="https://facebook.com/alfeicongames" target="_blank" aria-label="Facebook">📘</a>
+    <div class="nav-social" role="group" aria-label="Redes sociales">
+      <a href="https://wa.me/56926411278" target="_blank" rel="noopener" aria-label="WhatsApp">💬</a>
+      <a href="https://instagram.com/alfeicon.games" target="_blank" rel="noopener" aria-label="Instagram">📷</a>
+      <a href="https://facebook.com/alfeicongames" target="_blank" rel="noopener" aria-label="Facebook">📘</a>
     </div>
 
     <button class="nav-toggle" aria-label="Abrir menú" aria-controls="nav-panel" aria-expanded="false">
@@ -30,10 +40,18 @@
     </button>
 
     <nav id="nav-panel" class="nav-panel" aria-label="Navegación principal">
-      <a href="/pack/pack.html">Packs</a>
-      <a href="/games/game.html">Juegos</a>
-      <a href="/instrucciones/instrucc.html">Instrucciones</a>
-      <a href="/ayuda/ayuda.html">Términos y condiciones</a>
+      <a href="/pack/pack.html">
+        Packs
+      </a>
+      <a href="/games/game.html">
+        Juegos
+      </a>
+      <a href="/instrucciones/instrucc.html">
+        Instrucciones
+      </a>
+      <a href="/ayuda/ayuda.html">
+        Términos y condiciones
+      </a>
     </nav>
   </header>
 
@@ -102,32 +120,23 @@
     </div>
   </section>
 
-  <!-- ===== NOVEDADES ===== -->
-  <section class="news" aria-label="Novedades de la tienda">
-    <div class="news-head">
-      <h2>🆕 Novedades</h2>
-      <a class="news-all" href="/games/game.html">Ver todos los juegos</a>
-    </div>
+<!-- ===== NOVEDADES (OFERTAS DINÁMICAS) ===== -->
+<section class="news" aria-label="Novedades y ofertas">
+  <div class="news-head">
+    <h2>🆕 Novedades</h2>
+    <a class="news-all" href="/games/game.html">Ver todos los juegos</a>
+  </div>
 
-    <div class="news-grid">
-      <article class="news-card is-new" aria-label="Juego nuevo en la tienda">
-        <div class="news-top">
-          <span class="chip chip-new">Nuevo</span>
-        </div>
-        <figure class="news-cover">
-          <img id="feat-img" src="./img/hero.svg" alt="Portada del juego nuevo">
-        </figure>
-        <div class="news-body">
-          <h4 id="feat-title">Juego destacado</h4>
-          <p class="news-meta">
-            <span id="feat-size">—</span> • <span id="feat-compat">—</span>
-          </p>
-          <p class="news-price" id="feat-price">$— CLP</p>
-          <a id="feat-btn" class="btn btn-primary" target="_blank" rel="noopener">🛒 Comprar ahora</a>
-        </div>
-      </article>
+  <!-- Indicador de desplazamiento -->
+  <p class="slide-hint-top">Descuentos</p>
+
+  <!-- Carrusel horizontal de ofertas -->
+  <div class="news-grid-wrap">
+    <div class="news-grid autonudge" id="offers-grid" aria-live="polite">
+      <p id="offers-empty" style="opacity:.7;text-align:center;">Cargando ofertas...</p>
     </div>
-  </section>
+  </div>
+</section>
 
   <!-- ===== PACKS ===== -->
   <section class="featured-packs" aria-label="Packs de juegos">
@@ -200,10 +209,20 @@
     </section>
   </div>
 
-  <!-- JS -->
+    <script>
+    const grid = document.querySelector('.news-grid');
+    const wrap = document.querySelector('.news-grid-wrap');
+    if (grid && wrap) {
+      const hideHint = () => wrap.classList.add('slide-hide');
+      grid.addEventListener('scroll', hideHint, { passive: true });
+      grid.addEventListener('touchstart', hideHint, { passive: true });
+      setTimeout(hideHint, 3000);
+    }
+  </script>
+
+
+  <!-- JS (tu lógica la cargarás después) -->
   <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
   <script src="./script.js"></script>
-  <script src="./ruleta.js"></script>
-
 </body>
 </html>
