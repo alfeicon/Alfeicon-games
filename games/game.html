@@ -4,8 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Alfeicon Games — Juegos individuales</title>
-
-  <!-- CSS global de esta página -->
+  <meta name="theme-color" content="#1c1c1e" />
   <link rel="stylesheet" href="./style.css" />
 </head>
 <body>
@@ -14,20 +13,12 @@
   <!-- NAVBAR                      -->
   <!-- =========================== -->
   <header class="navbar" role="banner">
-    <!-- Logo (enlace a Inicio) -->
     <a class="logo" href="../inicio/inicio.html" aria-label="Inicio Alfeicon Games">
       <img src="../inicio/logo.png" alt="Alfeicon Games" />
       <span class="logo-text">Alfeicon Games</span>
     </a>
 
-    <!--
-      Acciones a la derecha:
-      - Botón de búsqueda (lupa) que se transforma en X
-      - Botón hamburguesa (menú)
-      Los agrupamos para controlar bien el espacio entre ambos.
-    -->
     <div class="nav-actions" role="group" aria-label="Acciones principales">
-      <!-- Botón lupa (se convierte en X al abrir búsqueda) -->
       <button
         id="openSearch"
         class="search-btn"
@@ -35,12 +26,10 @@
         aria-controls="searchPanel"
         aria-expanded="false"
       >
-        <!-- Los spans se estilizan con CSS como íconos (🔍 / ✕) -->
         <span class="i i-search" aria-hidden="true"></span>
         <span class="i i-close"  aria-hidden="true"></span>
       </button>
 
-      <!-- Botón hamburguesa (morph → X con CSS al abrir el menú) -->
       <button
         class="nav-toggle"
         aria-label="Abrir menú"
@@ -52,25 +41,18 @@
       </button>
     </div>
 
-    <!--
-      Panel lateral de búsqueda (se muestra/oculta por JS).
-      - En desktop se usa overlay; en móvil es fullscreen sin overlay extra.
-    -->
     <aside id="searchPanel" class="search-panel" aria-hidden="true">
       <header class="search-panel__header">
         <h3>Buscar</h3>
-        <!-- Cierra el panel de búsqueda -->
         <button id="closeSearch" aria-label="Cerrar búsqueda">✕</button>
       </header>
 
       <div class="search-panel__body">
-        <!-- Campo de nombre: filtra por coincidencia (muestra todas) -->
         <label>
           Nombre del juego
           <input id="qName" type="text" placeholder="Ej: Mario, Zelda…" />
         </label>
 
-        <!-- Rango de precio en CLP -->
         <div class="grid2">
           <label>
             Precio mín (CLP)
@@ -82,10 +64,8 @@
           </label>
         </div>
 
-        <!-- Ayuda contextual (JS escribe mensajes aquí) -->
         <small id="searchHint" style="display:block;margin-top:4px;opacity:.7"></small>
 
-        <!-- Acciones del buscador -->
         <div class="actions">
           <button id="doSearch" class="primary">Buscar</button>
           <button id="clearSearch" class="ghost">Limpiar filtros</button>
@@ -93,11 +73,6 @@
       </div>
     </aside>
 
-    <!--
-      Menú overlay (igual al Home)
-      - El contenedor #nav-panel ocupa toda la pantalla con un scrim.
-      - Dentro, .nav-fly es el panel "flotante" con las opciones.
-    -->
     <nav id="nav-panel" class="nav-panel" aria-label="Navegación principal">
       <div class="nav-fly">
         <a href="/inicio/inicio.html">
@@ -121,10 +96,6 @@
     </nav>
   </header>
 
-  <!--
-    Overlay (scrim) reutilizado por el buscador en desktop.
-    En móvil el buscador no usa overlay para evitar “oscurecer” de más.
-  -->
   <div id="overlay" class="overlay" aria-hidden="true"></div>
 
   <!-- =========================== -->
@@ -137,13 +108,14 @@
     </div>
   </section>
 
-  <!-- Chips con filtros activos (JS los dibuja aquí) -->
-  <div id="activeFilters" class="filter-chips" aria-live="polite"></div>
+  <!-- Toolbar de catálogo -->
+  <section class="filter-chips" style="align-items:center; gap:10px;">
+    <button id="btnOffersOnly" class="ghost" aria-pressed="false" type="button">Solo ofertas</button>
+    <!-- chips de filtros activos (JS los dibuja aquí) -->
+    <div id="activeFilters" class="filter-chips" style="margin:0; padding:0;"></div>
+  </section>
 
-  <!--
-    Contenedor que llena dinámicamente el catálogo.
-    El JS crea las “cards” con la data del CSV y las inyecta aquí.
-  -->
+  <!-- Contenedor del catálogo -->
   <section class="games-list" id="games-list" aria-label="Catálogo de juegos"></section>
 
   <!-- =========================== -->
@@ -153,13 +125,19 @@
     © <span id="year"></span> Alfeicon Games — Juegos individuales.
   </footer>
 
-  <!-- =========================== -->
-  <!-- SCRIPTS                     -->
-  <!-- =========================== -->
-  <!-- PapaParse si en algún momento lo usas; hoy el script trae su propio parser -->
-  <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
+  <noscript>
+    <p style="padding:12px;background:#222;border:1px solid rgba(255,255,255,.15);border-radius:8px;">
+      Activa JavaScript para ver el catálogo de juegos.
+    </p>
+  </noscript>
 
-  <!-- JS principal de esta página (render + menú + buscador) -->
+  <!-- JS principal -->
   <script src="script.js" defer></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', ()=> {
+      const y = document.getElementById('year');
+      if (y) y.textContent = new Date().getFullYear();
+    });
+  </script>
 </body>
 </html>

@@ -8,6 +8,10 @@
   --bg:#1c1c1e;
   --text:#f2f2f2;
 
+  /* Oferta */
+  --green:#22c55e;
+  --priceOld:#b7bcc6;
+
   /* Altura Navbar (por si la usas en JS) */
   --nav-h: 60px;
 
@@ -35,7 +39,7 @@ body{
 .navbar{
   position:sticky; top:0; z-index:1000;
   display:flex; justify-content:space-between; align-items:center;
-  padding:10px 12px; /* compacto para acercar botones */
+  padding:10px 12px;
   background:rgba(40,40,40,.85);
   backdrop-filter:blur(10px);
   border-bottom:1px solid var(--cardBorder);
@@ -46,7 +50,7 @@ body{
 @media (max-width:640px){ .logo-text{ font-size:16px } }
 
 /* Contenedor que agrupa lupa + hamburguesa a la derecha */
-.nav-actions{ display:flex; align-items:center; gap:8px } /* ajusta el espacio aquí */
+.nav-actions{ display:flex; align-items:center; gap:8px }
 
 /* Orden de superposición (evita choques) */
 .navbar { position: relative; z-index: 10; }
@@ -62,9 +66,7 @@ body{
   width:32px; height:32px; padding:0;
 }
 .search-btn .i{ width:20px; height:20px; transition:opacity .18s ease, transform .18s ease }
-/* Ícono de búsqueda como background */
 .search-btn .i.i-search{ background:url('magnifyingglass.svg') no-repeat center/20px }
-/* Ícono de cierre “X” dibujado con 2 barritas */
 .search-btn .i.i-close{
   position:absolute; left:6px; top:6px; width:20px; height:20px;
   opacity:0; transform:scale(.85);
@@ -79,11 +81,9 @@ body{
 .search-btn.is-open .i.i-search{ opacity:0; transform:scale(.85) }
 .search-btn.is-open .i.i-close { opacity:1; transform:scale(1) }
 
-/* Cuando el MENÚ está abierto, oculta la lupa para que no invada el header del menú */
+/* Cuando el MENÚ está abierto, oculta la lupa */
 body.menu-open #openSearch{
-  opacity:0;
-  visibility:hidden;
-  pointer-events:none;
+  opacity:0; visibility:hidden; pointer-events:none;
   transition:opacity .15s ease;
 }
 
@@ -105,13 +105,10 @@ body.menu-open #openSearch{
 }
 .nav-toggle .line:first-child{ top:calc(50% - var(--bar-gap)); transform:translateY(-50%) }
 .nav-toggle .line:last-child { bottom:calc(50% - var(--bar-gap)); transform:translateY(50%) }
-/* X */
 .nav-toggle.open .line:first-child{ top:50%; transform:translateY(-50%) rotate(45deg) }
 .nav-toggle.open .line:last-child { bottom:auto; top:50%; transform:translateY(-50%) rotate(-45deg) }
-/* Visibilidad por breakpoint */
 @media (max-width:768px){ .nav-toggle{ display:block } }
 @media (min-width:769px){ .nav-toggle{ display:none } }
-/* Mantener botón arriba cuando el menú está abierto */
 body.menu-open .navbar{ z-index:10002 }
 body.menu-open .nav-toggle{
   position:fixed; top:calc(env(safe-area-inset-top) + 12px); right:16px; z-index:10001;
@@ -144,8 +141,36 @@ body.menu-open .nav-toggle{
   padding:16px;
   box-shadow:0 8px 28px rgba(0,0,0,.35);
   transition:transform .15s ease, box-shadow .2s ease;
+  position:relative; /* para cinta oferta */
+  overflow:hidden;
 }
 .game-card:hover{ transform:translateY(-2px); box-shadow:0 8px 30px rgba(0,0,0,.25) }
+
+/* Cinta / cartel "OFERTA 🔥" */
+.game-card.oferta{
+  border-color: rgba(34,197,94,.5);
+  box-shadow: 0 0 20px rgba(34,197,94,.15);
+}
+.game-card.oferta::before{
+  content:"OFERTA 🔥";
+  position:absolute;
+  top:14px; left:-45px;
+  background:linear-gradient(135deg,#22c55e,#16a34a);
+  color:#fff; font-weight:900; font-size:13px;
+  padding:5px 65px;
+  transform:rotate(-45deg);
+  box-shadow:0 4px 10px rgba(0,0,0,.25);
+  letter-spacing:.06em; text-align:center;
+  text-shadow:0 0 6px rgba(0,0,0,.3);
+  border-top:1px solid rgba(255,255,255,.2);
+  border-bottom:1px solid rgba(0,0,0,.2);
+  animation:offerPulse 2s infinite ease-in-out;
+}
+@keyframes offerPulse{
+  0%,100%{ filter:brightness(1) }
+  50%{ filter:brightness(1.25) }
+}
+
 /* Portada 16:9 */
 .game-cover{
   grid-area:cover;
@@ -157,54 +182,66 @@ body.menu-open .nav-toggle{
   color:#cfcfcf; font-size:12px; letter-spacing:.2px;
 }
 .game-cover img{ width:100%; height:100%; object-fit:cover; display:block }
+
 /* Título + meta */
 .game-body{ grid-area:body; display:grid; gap:8px }
 .game-title{
   font-size:20px; font-weight:800; letter-spacing:-.01em; line-height:1.25;
 }
 .game-meta{ color:#d2d2d2; font-size:14px }
+
 /* Precio + CTA */
 .game-cta{ grid-area:cta; display:grid; gap:10px; justify-items:start }
-.game-price{ font-size:24px; font-weight:900; color:#fff; margin-top:2px }
+
+/* Precio base */
+.game-price{
+  font-size:24px; font-weight:900; color:#fff; margin-top:2px; line-height:1.2;
+}
+
+/* Oferta: nuevo grande y verde + antiguo tachado */
+.game-price.is-offer{
+  display:flex; align-items:baseline; gap:10px;
+}
+.game-price.is-offer .now{
+  font-size:clamp(22px,3.2vw,30px);
+  font-weight:950;
+  color:var(--green);
+  letter-spacing:-.01em;
+}
+.game-price.is-offer .old{
+  font-size:clamp(14px,2.3vw,18px);
+  color:var(--priceOld);
+  text-decoration:line-through;
+  text-decoration-thickness:2px;
+  text-decoration-color:rgba(255,255,255,.45);
+  opacity:.9;
+}
+
+/* Badge simple debajo del título (opcional) */
+.badge-oferta{
+  display:inline-block; margin-top:6px;
+  padding:4px 10px; border-radius:999px;
+  background:rgba(34,197,94,.15);
+  border:1px solid rgba(34,197,94,.45);
+  color:var(--green);
+  font-weight:800; font-size:.82rem; letter-spacing:.02em;
+}
 
 .game-buy{
   background:var(--accent);
-  color:#fff;
-  text-decoration:none;
-  font-weight:800;
-  padding:14px 18px;
-  border-radius:16px;
-  display:inline-flex;
-  align-items:center;
-  gap:10px; /* espacio entre el ícono y el texto */
+  color:#fff; text-decoration:none; font-weight:800;
+  padding:14px 18px; border-radius:16px;
+  display:inline-flex; align-items:center; gap:10px;
   transition:filter .15s ease, transform .15s ease;
   transform:translateZ(0);
 }
-
-.game-buy .icon{
-  width:18px;
-  height:18px;
-  display:block;
-  filter:brightness(1.1);
-}
-
-.game-buy:hover{ filter:brightness(1.06); transform:translateY(-1px) }
-.game-buy:focus-visible{
-  outline:2px solid #fff;
-  outline-offset:2px;
-  box-shadow:0 0 0 3px rgba(124,77,255,.35);
-}
-
+.game-buy .icon{ width:18px; height:18px; display:block; filter:brightness(1.1) }
 .game-buy:hover{ filter:brightness(1.06); transform:translateY(-1px) }
 .game-buy:focus-visible{
   outline:2px solid #fff; outline-offset:2px;
   box-shadow:0 0 0 3px rgba(124,77,255,.35);
 }
-.game-buy:hover{ filter:brightness(1.06); transform:translateY(-1px) }
-.game-buy:focus-visible{
-  outline:2px solid #fff; outline-offset:2px;
-  box-shadow:0 0 0 3px rgba(124,77,255,.35);
-}
+
 @media (min-width:760px){
   .game-card{ padding:18px; gap:16px }
   .game-title{ font-size:22px }
@@ -213,6 +250,7 @@ body.menu-open .nav-toggle{
 @media (max-width:480px){
   .game-buy{ min-width:56%; justify-content:center }
 }
+
 /* Accesibilidad: foco en toda la card */
 .game-card:focus-within{
   box-shadow:0 0 0 2px var(--accent), 0 0 0 6px rgba(124,77,255,.35);
@@ -262,11 +300,9 @@ footer{
 }
 .nav-fly a:hover{ background:rgba(255,255,255,.06) }
 .nav-fly .hr{ height:1px; background:var(--cardBorder); margin:14px 0 }
-/* Cuando hay panel abierto, bloquea scroll */
 html.scroll-lock, body.scroll-lock{ overflow:hidden; height:100% }
 body.scroll-lock{ position:fixed; width:100% }
 
-/* Safe areas (iPhone con notch) */
 @supports (padding:max(0px)){
   .navbar{
     padding-left:max(12px, env(safe-area-inset-left));
@@ -307,7 +343,6 @@ body.scroll-lock{ position:fixed; width:100% }
 .ghost{
   background:transparent; border:1px solid rgba(255,255,255,.2); color:#fff; padding:10px 14px; border-radius:12px; cursor:pointer;
 }
-/* Scrim del panel de búsqueda en desktop */
 .overlay{
   position:fixed; inset:0; background:rgba(0,0,0,.4);
   opacity:0; pointer-events:none; transition:opacity .2s; z-index:1995;
@@ -316,7 +351,6 @@ body.scroll-lock{ position:fixed; width:100% }
 
 /* ------- Mobile: panel fullscreen y contraste afinado ------- */
 @media (max-width: 768px){
-  /* Fullscreen y sin overlay adicional */
   .search-panel{
     width:100vw; right:-100vw; left:auto;
     border-left:none; box-shadow:none;
@@ -326,7 +360,6 @@ body.scroll-lock{ position:fixed; width:100% }
   }
   .search-panel.open{ right:0 }
 
-  /* Header fijo con safe-area */
   .search-panel__header{
     position:sticky; top:calc(env(safe-area-inset-top) + 6px); z-index:1;
     display:flex; align-items:center; justify-content:space-between;
@@ -337,17 +370,14 @@ body.scroll-lock{ position:fixed; width:100% }
   }
   .search-panel__header h3{ font-size:22px; font-weight:800; letter-spacing:-.01em }
 
-  /* Cuerpo con padding cómodo y campos legibles (>=16px evita zoom iOS) */
   .search-panel__body{ padding:12px 18px 18px; gap:14px }
   .search-panel input{
     background:#232327; border:1px solid rgba(255,255,255,.12); color:#f7f7f7;
     font-size:16px; height:44px; border-radius:12px;
   }
 
-  /* En móvil, min/máx bajo una columna */
   .grid2{ grid-template-columns:1fr }
 
-  /* Acciones “pegadas” al borde inferior con safe-area */
   .actions{
     position:sticky; bottom:calc(env(safe-area-inset-bottom) + 12px);
     padding-top:8px;
@@ -356,7 +386,6 @@ body.scroll-lock{ position:fixed; width:100% }
   }
   .primary,.ghost{ height:44px; border-radius:14px; padding:0 16px; font-weight:700 }
 
-  /* En móvil no usamos overlay adicional */
   .overlay{ display:none }
 }
 
@@ -408,4 +437,93 @@ body.scroll-lock{ position:fixed; width:100% }
   opacity:.85;
   align-self:center;
   margin-right:4px;
+}
+
+/* ===== Mejora 1: grid responsiva elegante para las cards ===== */
+.games-list{
+  /* auto-fill asegura tantas columnas como quepan, con mínimo 260px */
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+}
+
+/* ===== Mejora 2: toolbar para botón “Solo ofertas” (junto al título) ===== */
+.toolbar{
+  max-width:1100px; margin:-8px auto 12px; padding:0 16px;
+  display:flex; gap:8px; justify-content:flex-end; align-items:center;
+}
+#btnOffersOnly{
+  min-height:40px; padding:0 14px; border-radius:999px;
+  font-weight:800; letter-spacing:.01em;
+}
+#btnOffersOnly.ghost{ border-color:rgba(255,255,255,.25) }
+#btnOffersOnly.primary{ background:var(--green); border:0; color:#0b1c0f }
+
+/* ===== Mejora 3: cinta “OFERTA 🔥” no bloquea eventos y respeta z-index ===== */
+.game-card.oferta::before{
+  pointer-events:none;
+  z-index:1;
+}
+
+/* ===== Mejora 4: estados de foco coherentes en todos los botones ===== */
+.search-btn:focus-visible,
+.nav-toggle:focus-visible,
+.primary:focus-visible,
+.ghost:focus-visible,
+.game-buy:focus-visible{
+  outline:2px solid #fff;
+  outline-offset:2px;
+  box-shadow:0 0 0 3px rgba(124,77,255,.35);
+}
+
+/* ===== Mejora 5: hover leve en la portada (solo desktop) ===== */
+@media (hover:hover){
+  .game-cover img{ transition: transform .25s ease }
+  .game-card:hover .game-cover img{ transform: scale(1.02) }
+}
+
+/* ===== Mejora 6: badge de oferta mejor posicionado en móviles ===== */
+@media (max-width:480px){
+  .badge-oferta{ margin-top:2px; font-size:.78rem; }
+}
+
+/* ===== Mejora 7: “reduce motion” apaga animaciones además de transiciones ===== */
+@media (prefers-reduced-motion:reduce){
+  .game-card.oferta::before{ animation: none !important; }
+}
+
+/* ===== (Opcional) Estado vacío para cuando un filtro no devuelve resultados ===== */
+.empty-state{
+  max-width:900px; margin:24px auto; padding:24px 16px; text-align:center;
+  color:#cfcfcf; background:rgba(255,255,255,.03);
+  border:1px dashed rgba(255,255,255,.12); border-radius:14px;
+}
+
+/* Precio base un poco más compacto */
+.game-price{
+  font-size: 20px;         /* antes 24 */
+  line-height: 1.1;        /* más apretado */
+  margin-top: 0;           /* evita aire arriba */
+}
+
+/* En pantallas grandes, también moderado */
+@media (min-width: 760px){
+  .game-price{ font-size: 22px; }   /* antes 26 */
+}
+
+/* Bloque de precio en oferta: menos gap y tamaños más controlados */
+.game-price.is-offer{
+  gap: 8px;                /* antes 10px */
+}
+
+.game-price.is-offer .now{
+  font-size: clamp(20px, 2.6vw, 26px); /* antes 22–30 */
+}
+
+.game-price.is-offer .old{
+  font-size: clamp(13px, 2vw, 16px);   /* antes 14–18 */
+  margin-top: 0;                       /* sin salto extra */
+}
+
+/* El contenedor CTA también más compacto */
+.game-cta{
+  gap: 8px;                 /* antes 10px */
 }
